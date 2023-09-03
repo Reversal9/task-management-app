@@ -1,0 +1,10 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const columns_1 = require("../controllers/columns");
+const router = (0, express_1.Router)();
+router.get("/columns", columns_1.getColumns);
+router.post("/columns", columns_1.addColumn);
+router.put("/columns/:id", columns_1.updateColumn);
+router.delete("/columns/:id", columns_1.deleteColumn);
+exports.default = router;
