@@ -20,6 +20,9 @@ const uri = `mongodb://127.0.0.1:27017`;
 mongoose_1.default
     .connect(uri)
     .then(() => app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`)))
-    .catch(error => {
-    throw error;
+    .catch((err) => {
+    throw err;
+});
+app.get("/", () => {
+    console.log("Entered");
 });

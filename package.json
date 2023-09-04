@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/Reversal9/task-management-app#readme",
   "dependencies": {
+    "axios": "^1.5.0",
     "concurrently": "^8.2.1"
   }
 }
