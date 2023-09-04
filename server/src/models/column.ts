@@ -8,7 +8,7 @@ const columnSchema: Schema = new Schema(
             required: true,
         },
         taskIds: {
-            type: String,
+            type: [String],
             required: true,
         }
     },

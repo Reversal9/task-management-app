@@ -7,7 +7,7 @@ const columnSchema = new mongoose_1.Schema({
         required: true,
     },
     taskIds: {
-        type: String,
+        type: [String],
         required: true,
     }
 }, {
