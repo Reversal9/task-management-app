@@ -5,23 +5,26 @@ import { IColumn } from "@/types/column.ts";
 
 export interface BoardState {
     columns: IColumn[],
-    tasks: ITask[]
+    tasks: Record<string, ITask>
 }
 
 const initialState: BoardState = {
     columns: [],
-    tasks: []
+    tasks: {}
 };
 
 export const boardSlice = createSlice({
     name: "board",
     initialState,
     reducers: {
-        setColumns: (state, action) => {
+        setColumns: (state, action: { payload: IColumn[] }) => {
             state.columns = action.payload;
         },
-        setTasks: (state, action) => {
-            state.tasks = action.payload;
+        setTasks: (state, action: { payload: ITask[] }) => {
+            state.tasks = {};
+            for (const task of action.payload) {
+                state.tasks[task._id] = task;
+            }
         }
     }
 });

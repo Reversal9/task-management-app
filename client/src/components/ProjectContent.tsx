@@ -73,8 +73,7 @@ const ProjectContent: React.FC = () => {
     return hasLoaded ?
         <div className = "flex flex-1 flex-row px-8">
             {columns.map((column: IColumn) => {
-                console.log(column);
-                return <ProjectColumn key={column._id} column={column}></ProjectColumn>
+                return <ProjectColumn key = {column._id} column = {column}></ProjectColumn>
             })}
             <Toaster></Toaster>
         </div>
