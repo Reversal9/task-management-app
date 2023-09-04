@@ -24,7 +24,3 @@ mongoose
     .catch((err) => {
         throw err;
     });
-
-app.get("/", () => {
-    console.log("Entered");
-})
