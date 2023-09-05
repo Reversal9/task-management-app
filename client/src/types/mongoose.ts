@@ -1,4 +1,4 @@
-export interface Mongoose {
+export interface IMongoose {
     _id: string,
     createdAt?: string,
     updatedAt?: string

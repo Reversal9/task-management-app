@@ -3,25 +3,24 @@ import axios, { CancelTokenSource } from "axios";
 import { useToast } from "@/components/ui/use-toast"
 import { Toaster } from "@/components/ui/toaster";
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
-import { setColumns, setTasks, selectColumns } from "@/features/boardSlice";
-import { IColumn } from "@/types/column";
-import { ColumnApi, TaskApi } from "@/types/api";
+import { setColumns, setTasks, selectColumnIds } from "@/features/boardSlice";
+import { IColumnApi, ITaskApi } from "@/types/api";
 import ProjectColumn from "@/components/ProjectColumn";
 
-const ProjectContent: React.FC = () => {
-    const [hasLoaded, setHasLoaded] = useState<boolean>(false);
+const ProjectContent: React.FC = (): React.ReactElement | null => {
+    const [hasLoaded, setHasLoaded]: [boolean, React.Dispatch<React.SetStateAction<boolean>>] = useState<boolean>(false);
     const { toast } = useToast();
     const dispatch = useAppDispatch();
-    const columns = useAppSelector<IColumn[]>(selectColumns);
+    const columnIds: string[] = useAppSelector<string[]>(selectColumnIds);
     
     useEffect(() => {
         const cancelToken: CancelTokenSource = axios.CancelToken.source();
         
-        async function handleApi() {
+        async function handleApi(): Promise<void> {
             await axios
-                .get("api/columns", { cancelToken: cancelToken.token })
+                .get<IColumnApi>("api/columns", { cancelToken: cancelToken.token })
                 .then((res) => {
-                    const data: ColumnApi = res.data;
+                    const data: IColumnApi = res.data;
                     dispatch(setColumns(data.columns));
                     toast(({
                         title: "Response Status 200",
@@ -36,9 +35,9 @@ const ProjectContent: React.FC = () => {
                     }
                 });
             await axios
-                .get("api/tasks", { cancelToken: cancelToken.token })
+                .get<ITaskApi>("api/tasks", { cancelToken: cancelToken.token })
                 .then((res) => {
-                    const data: TaskApi = res.data;
+                    const data: ITaskApi = res.data;
                     dispatch(setTasks(data.tasks));
                     toast(({
                         title: "Response Status 200",
@@ -65,15 +64,15 @@ const ProjectContent: React.FC = () => {
                 });
             });
         
-        return () => {
+        return (): void => {
             cancelToken.cancel();
         };
     }, []);
     
     return hasLoaded ?
-        <div className = "flex flex-1 flex-row px-8">
-            {columns.map((column: IColumn) => {
-                return <ProjectColumn key = {column._id} column = {column}></ProjectColumn>
+        <div className = "flex flex-1 flex-row px-8 gap-4">
+            {columnIds.map((columnId: string) => {
+                return <ProjectColumn key = {columnId} columnId = {columnId}></ProjectColumn>
             })}
             <Toaster></Toaster>
         </div>

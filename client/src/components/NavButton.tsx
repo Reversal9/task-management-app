@@ -5,7 +5,7 @@ interface Props {
     children: ReactNode
 }
 
-const NavButton: React.FC<Props> = ({ children }) => {
+const NavButton: React.FC<Props> = ({ children }: Props) => {
     return (
         <Button variant = "cloud" size = "sm">{children}</Button>
     );

@@ -1,15 +1,19 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { RootState } from '../app/store';
-import { ITask } from "@/types/task.ts";
-import { IColumn } from "@/types/column.ts";
+import { ITask } from "@/types/task";
+import { IColumn } from "@/types/column";
 
 export interface BoardState {
-    columns: IColumn[],
-    tasks: Record<string, ITask>
+    columns: {
+        [columnId: string]: IColumn
+    },
+    tasks: {
+        [taskId: string]: ITask
+    }
 }
 
 const initialState: BoardState = {
-    columns: [],
+    columns: {},
     tasks: {}
 };
 
@@ -18,7 +22,10 @@ export const boardSlice = createSlice({
     initialState,
     reducers: {
         setColumns: (state, action: { payload: IColumn[] }) => {
-            state.columns = action.payload;
+            state.columns = {};
+            for (const column of action.payload) {
+                state.columns[column._id] = column;
+            }
         },
         setTasks: (state, action: { payload: ITask[] }) => {
             state.tasks = {};
@@ -34,8 +41,6 @@ export const {
     setTasks
 } = boardSlice.actions;
 
-export const selectColumns = (state: RootState) => state.board.columns;
-export const selectTasks = (state: RootState) => state.board.tasks;
-
+export const selectColumnIds = (state: RootState) => Object.values(state.board.columns).map(column => column._id);
 
 export default boardSlice.reducer;

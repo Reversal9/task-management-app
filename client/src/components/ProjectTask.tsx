@@ -1,13 +1,21 @@
 import React from "react";
 import { ITask } from "@/types/task";
+import { useAppSelector } from "@/app/hooks.ts";
+import { RootState } from "@/app/store.ts";
 
 interface Props {
-    task: ITask
+    taskId: string
 }
 
-const ProjectTask: React.FC<Props> = ({ task }) => {
+const ProjectTask: React.FC<Props> = ({ taskId }: Props): React.ReactElement | undefined => {
+    const task: ITask = useAppSelector<ITask>((state: RootState) => {
+        return state.board.tasks[taskId];
+    });
+    
+    if (!task) return;
+    
     return (
-        <div className = "bg-green-200">
+        <div className = "flex">
             {task.summary}
         </div>
     );

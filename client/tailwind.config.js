@@ -8,6 +8,9 @@ module.exports = {
     './src/**/*.{ts,tsx}',
 	],
   theme: {
+    minHeight: {
+      'mc': '140px'
+    },
     container: {
       center: true,
       padding: "2rem",

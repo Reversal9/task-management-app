@@ -1,24 +1,27 @@
 import React from "react";
 import { IColumn } from "@/types/column";
 import { useAppSelector } from "@/app/hooks";
-import { selectTasks } from "@/features/boardSlice";
-import { ITask } from "@/types/task";
 import ProjectTask from "@/components/ProjectTask";
+import { RootState } from "@/app/store";
 
 interface Props {
-    column: IColumn
+    columnId: string
 }
 
-const ProjectColumn: React.FC<Props> = ({ column }) => {
-    const tasks: Record<string, ITask> = useAppSelector(selectTasks);
-    const columnTasks: ITask[] = column.taskIds.map((taskId) => tasks[taskId]);
+const ProjectColumn: React.FC<Props> = ({ columnId }: Props): React.ReactElement | undefined => {
+    const column: IColumn = useAppSelector<IColumn>((state: RootState) => {
+        return state.board.columns[columnId];
+    });
+    
+    if (!column) return;
     
     return (
-        <div className = "flex flex-col h-5 w-20 bg-green-200 outline">
-            <p>{column.title}</p>
-            {columnTasks.map((task: ITask | undefined) => {
-                if (!task) return;
-                return <ProjectTask key = {task._id} task = {task}></ProjectTask>
+        <div className = "flex flex-col min-h-mc w-64 bg-gray-200/50 rounded-lg">
+            <div className = "flex flex-row">
+                <p className = "text-sm text-zinc-500 font-semibold">{column.title}</p>
+            </div>
+            {column.taskIds.map((taskId: string) => {
+                return <ProjectTask key = {taskId} taskId = {taskId}></ProjectTask>
             })}
         </div>
     );

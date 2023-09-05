@@ -1,6 +1,6 @@
-import { Mongoose } from "./mongoose.ts";
+import { IMongoose } from "./mongoose";
 
-export interface ITask extends Mongoose {
+export interface ITask extends IMongoose {
     summary: string,
     memberId?: string
 }
