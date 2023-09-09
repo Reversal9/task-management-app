@@ -4,7 +4,7 @@ import { useAppSelector } from "@/app/hooks";
 import ProjectTask from "@/components/ProjectTask";
 import { RootState } from "@/app/store";
 import { Button } from "@/components/ui/button";
-import { MoreHorizontalIcon } from "lucide-react";
+import { MoreHorizontalIcon, PlusIcon } from "lucide-react";
 
 interface Props {
     columnId: string
@@ -29,7 +29,10 @@ const ProjectColumn: React.FC<Props> = ({ columnId }: Props): React.ReactElement
             <ProjectTask taskId = "2"></ProjectTask>
             <ProjectTask taskId = "2"></ProjectTask>
             <ProjectTask taskId = "2"></ProjectTask>
-            <Button variant = "task" size = "lg">+ Create issue</Button>
+            <Button className = "flex flex-row gap-1" variant = "task" size = "lg">
+                <PlusIcon size = {16} strokeWidth = {3} color = "#52525B"></PlusIcon>
+                <p className = "flex-1 text-left text-base text-zinc-600 font-semibold">Create task</p>
+            </Button>
         </div>
     );
 };
