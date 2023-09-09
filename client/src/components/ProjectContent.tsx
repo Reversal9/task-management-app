@@ -6,6 +6,8 @@ import { useAppDispatch, useAppSelector } from "@/app/hooks";
 import { setColumns, setTasks, selectColumnIds } from "@/features/boardSlice";
 import { IColumnApi, ITaskApi } from "@/types/api";
 import ProjectColumn from "@/components/ProjectColumn";
+import { Button } from "@/components/ui/button";
+import { PlusIcon } from "lucide-react";
 
 const ProjectContent: React.FC = (): React.ReactElement | null => {
     const [hasLoaded, setHasLoaded]: [boolean, React.Dispatch<React.SetStateAction<boolean>>] = useState<boolean>(false);
@@ -74,6 +76,9 @@ const ProjectContent: React.FC = (): React.ReactElement | null => {
             {columnIds.map((columnId: string) => {
                 return <ProjectColumn key = {columnId} columnId = {columnId}></ProjectColumn>
             })}
+            <Button className = "bg-gray-200/50 rounded-lg aspect-square" variant = "task" size = "icon">
+                <PlusIcon size = {24} strokeWidth = {2} color = "#52525B"></PlusIcon>
+            </Button>
             <Toaster></Toaster>
         </div>
         : null;
