@@ -1,16 +1,25 @@
 import React from "react";
-import NavButton from "@/components/NavButton.tsx";
+import { Button } from "@/components/ui/button"
+import { ToggleThemeButton } from "@/components/Button";
+import { GithubIcon, InstagramIcon, TwitterIcon } from "lucide-react";
 
 const Navbar: React.FC = () => {
     return (
-        <nav className = "flex flex-row p-2.5 bg-white shadow z-10">
+        <nav className = "flex flex-row p-2.5 shadow z-10">
             <div className = "flex-1">
-                <NavButton>Home</NavButton>
+                <Button variant = "link" size = "sm">Home</Button>
             </div>
             <div>
-                <NavButton>Github</NavButton>
-                <NavButton>Instagram</NavButton>
-                <NavButton>Twitter</NavButton>
+                <Button variant = "cloud" size = "icon">
+                    <GithubIcon></GithubIcon>
+                </Button>
+                <Button variant = "cloud" size = "icon">
+                    <InstagramIcon></InstagramIcon>
+                </Button>
+                <Button variant = "cloud" size = "icon">
+                    <TwitterIcon></TwitterIcon>
+                </Button>
+                <ToggleThemeButton></ToggleThemeButton>
             </div>
         </nav>
     );

@@ -1,5 +1,5 @@
 import React from "react";
-import ProjectButton from "@/components/ProjectButton";
+import { Button } from "@/components/ui/button";
 import FilterTasksCommand from "@/components/FilterTasksCommand";
 import ProjectTeam from "@/components/ProjectTeam";
 import {
@@ -12,7 +12,7 @@ import {
 
 const ProjectHeader: React.FC = () => {
     return (
-        <div className = "flex flex-col px-8 py-6 bg-white">
+        <div className = "flex flex-col px-8 py-6">
             <div>
                 <p className = "text-sm text-zinc-500">
                     Projects / Project Name
@@ -23,9 +23,9 @@ const ProjectHeader: React.FC = () => {
                     PN Board
                 </p>
                 <div className = "gap-1">
-                    <ProjectButton>a</ProjectButton>
-                    <ProjectButton>a</ProjectButton>
-                    <ProjectButton>a</ProjectButton>
+                    <Button variant = "ghost" size = "icon">a</Button>
+                    <Button variant = "ghost" size = "icon">a</Button>
+                    <Button variant = "ghost" size = "icon">a</Button>
                 </div>
             </div>
             <div className = "flex flex-row py-2">
@@ -44,7 +44,7 @@ const ProjectHeader: React.FC = () => {
                             <SelectItem value="system">System</SelectItem>
                         </SelectContent>
                     </Select>
-                    <ProjectButton>Insights</ProjectButton>
+                    <Button variant = "ghost" size = "sm">Insights</Button>
                 </div>
             </div>
         </div>

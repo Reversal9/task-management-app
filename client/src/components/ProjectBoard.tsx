@@ -4,7 +4,7 @@ import ProjectContent from "@/components/ProjectContent";
 
 const ProjectBoard: React.FC = () => {
     return (
-        <div className = "flex flex-1 flex-col bg-white shadow">
+        <div className = "flex flex-1 flex-col shadow">
             <ProjectHeader></ProjectHeader>
             <ProjectContent></ProjectContent>
         </div>
