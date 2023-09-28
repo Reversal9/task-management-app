@@ -15,7 +15,6 @@ app.use("/api", memberRoutes);
 const PORT: string | number = process.env.PORT || 5000;
 
 const uri: string = `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}@${process.env.MONGO_DB}.rd75dmz.mongodb.net/?retryWrites=true&w=majority`;
-// const uri: string = `mongodb://127.0.0.1:27017/taskmanagement`;
 
 mongoose
     .connect(uri)

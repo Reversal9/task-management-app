@@ -30,7 +30,7 @@ const addTask = async (req, res) => {
         const newTask = await task.save({ session });
         await column_1.default.findByIdAndUpdate({ _id: columnId }, { $push: { taskIds: newTask._id } }, { new: true })
             .session(session);
-        const allTasks = await task_1.default.find();
+        const allTasks = await task_1.default.find().session(session);
         await session.commitTransaction();
         res.status(201).json({
             message: "Task added",
@@ -62,13 +62,19 @@ const updateTask = async (req, res) => {
 exports.updateTask = updateTask;
 const deleteTask = async (req, res) => {
     try {
-        const deletedTask = await task_1.default.findByIdAndRemove(req.params.id);
-        const allTasks = await task_1.default.find();
+        const { id: taskId } = req.params;
+        const session = await mongoose_1.default.startSession();
+        session.startTransaction();
+        const deletedTask = await task_1.default.findByIdAndRemove(taskId).session(session);
+        const allTasks = await task_1.default.find().session(session);
+        await column_1.default.findOneAndUpdate({ taskIds: taskId }, { $pull: { taskIds: taskId } }).session(session);
+        await session.commitTransaction();
         res.status(200).json({
             message: "Task deleted",
             task: deletedTask,
             tasks: allTasks
         });
+        await session.endSession();
     }
     catch (err) {
         throw err;

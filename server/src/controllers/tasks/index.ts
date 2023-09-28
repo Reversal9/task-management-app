@@ -25,7 +25,7 @@ const addTask = async(req: Request, res: Response) => {
             memberId: body.memberId
         });
         
-        const session = await mongoose.startSession();
+        const session: mongoose.mongo.ClientSession = await mongoose.startSession();
         session.startTransaction();
         
         const newTask: ITask = await task.save({ session });
@@ -36,7 +36,7 @@ const addTask = async(req: Request, res: Response) => {
             { new: true })
                 .session(session);
         
-        const allTasks: ITask[] = await Task.find();
+        const allTasks: ITask[] = await Task.find().session(session);
         
         await session.commitTransaction();
         
@@ -74,13 +74,25 @@ const updateTask = async(req: Request, res: Response) => {
 
 const deleteTask = async(req: Request, res: Response) => {
     try {
-        const deletedTask: ITask | null = await Task.findByIdAndRemove(req.params.id);
-        const allTasks: ITask[] = await Task.find();
+        const { id: taskId } = req.params;
+        
+        const session: mongoose.mongo.ClientSession = await mongoose.startSession();
+        session.startTransaction();
+        
+        const deletedTask: ITask | null = await Task.findByIdAndRemove(taskId).session(session);
+        const allTasks: ITask[] = await Task.find().session(session);
+        
+        await Column.findOneAndUpdate({ taskIds: taskId }, { $pull: { taskIds: taskId } }).session(session);
+        
+        await session.commitTransaction();
+        
         res.status(200).json({
             message: "Task deleted",
             task: deletedTask,
             tasks: allTasks
         });
+        
+        await session.endSession();
     } catch(err) {
         throw err;
     }
