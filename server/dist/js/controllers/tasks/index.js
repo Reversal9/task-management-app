@@ -5,6 +5,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteTask = exports.updateTask = exports.addTask = exports.getTasks = void 0;
 const task_1 = __importDefault(require("../../models/task"));
+const mongoose_1 = __importDefault(require("mongoose"));
+const column_1 = __importDefault(require("../../models/column"));
 const getTasks = async (req, res) => {
     try {
         const tasks = await task_1.default.find();
@@ -18,17 +20,24 @@ exports.getTasks = getTasks;
 const addTask = async (req, res) => {
     try {
         const body = req.body;
+        const columnId = body.columnId;
         const task = new task_1.default({
             summary: body.summary,
             memberId: body.memberId
         });
-        const newTask = await task.save();
+        const session = await mongoose_1.default.startSession();
+        session.startTransaction();
+        const newTask = await task.save({ session });
+        await column_1.default.findByIdAndUpdate({ _id: columnId }, { $push: { taskIds: newTask._id } }, { new: true })
+            .session(session);
         const allTasks = await task_1.default.find();
+        await session.commitTransaction();
         res.status(201).json({
             message: "Task added",
             task: newTask,
             tasks: allTasks
         });
+        await session.endSession();
     }
     catch (err) {
         throw err;

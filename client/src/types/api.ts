@@ -8,10 +8,10 @@ interface IApiDataType {
 
 export interface IColumnApi extends IApiDataType {
     columns: IColumn[],
-    column: IColumn
+    column?: IColumn
 }
 
 export interface ITaskApi extends IApiDataType {
     tasks: ITask[],
-    task: ITask
+    task?: ITask
 }

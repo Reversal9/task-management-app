@@ -1,9 +1,11 @@
-import { createSlice } from '@reduxjs/toolkit';
-import { RootState } from '../app/store';
+import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { RootState, AppThunk } from '../app/store';
 import { ITask } from "@/types/task";
 import { IColumn } from "@/types/column";
+import { getColumns, getTasks } from "@/features/boardApi"
 
 export interface BoardState {
+    state: "loading" | "idle" | "pending" | "success",
     columns: {
         [columnId: string]: IColumn
     },
@@ -13,6 +15,7 @@ export interface BoardState {
 }
 
 const initialState: BoardState = {
+    state: "loading",
     columns: {},
     tasks: {}
 };
@@ -33,8 +36,21 @@ export const boardSlice = createSlice({
                 state.tasks[task._id] = task;
             }
         }
-    }
+    },
+    // extraReducers: (builder) => {
+    //     builder
+    //         .addCase
+    // }
 });
+
+// export const getColumns = createAsyncThunk(
+//     'board/getColumns',
+//     async () => {
+//         const response = await getColumns();
+//         // The value we return becomes the `fulfilled` action payload
+//         return response.data;
+//     }
+// );
 
 export const {
     setColumns,
@@ -42,5 +58,6 @@ export const {
 } = boardSlice.actions;
 
 export const selectColumnIds = (state: RootState) => Object.values(state.board.columns).map(column => column._id);
+export const selectState = (state: RootState) => state.board.state;
 
 export default boardSlice.reducer;

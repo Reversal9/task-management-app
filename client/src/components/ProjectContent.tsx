@@ -72,7 +72,7 @@ const ProjectContent: React.FC = (): React.ReactElement | null => {
     }, []);
     
     return hasLoaded ?
-        <div className = "flex flex-row px-8 gap-4">
+        <div className = "flex flex-row px-8 pb-4 gap-4">
             {columnIds.map((columnId: string) => {
                 return <ProjectColumn key = {columnId} columnId = {columnId}></ProjectColumn>
             })}

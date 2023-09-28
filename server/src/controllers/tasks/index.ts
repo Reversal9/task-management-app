@@ -3,6 +3,9 @@ import { ITask } from "../../types/task";
 import Task from "../../models/task";
 import { IMember } from "../../types/member";
 import Member from "../../models/member";
+import { IColumn } from "../../types/column";
+import mongoose from "mongoose";
+import Column from "../../models/column";
 
 const getTasks = async(req: Request, res: Response) => {
     try {
@@ -15,18 +18,35 @@ const getTasks = async(req: Request, res: Response) => {
 
 const addTask = async(req: Request, res: Response) => {
     try {
-        const body = req.body as Pick<ITask, "summary" | "memberId">;
+        const body = req.body as Record<"columnId", string> & Pick<ITask, "summary" | "memberId">;
+        const columnId: string = body.columnId;
         const task: ITask = new Task({
             summary: body.summary,
             memberId: body.memberId
         });
-        const newTask: ITask = await task.save();
+        
+        const session = await mongoose.startSession();
+        session.startTransaction();
+        
+        const newTask: ITask = await task.save({ session });
+        
+        await Column.findByIdAndUpdate(
+        { _id: columnId },
+            { $push: { taskIds: newTask._id }},
+            { new: true })
+                .session(session);
+        
         const allTasks: ITask[] = await Task.find();
+        
+        await session.commitTransaction();
+        
         res.status(201).json({
             message: "Task added",
             task: newTask,
             tasks: allTasks
         });
+        
+        await session.endSession();
     } catch(err) {
         throw err;
     }

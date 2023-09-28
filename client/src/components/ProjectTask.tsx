@@ -30,7 +30,7 @@ const ProjectTask: React.FC<Props> = ({ taskId }: Props): React.ReactElement | u
     
     return (
         <div className = "flex flex-col bg-white shadow-lg rounded-lg">
-            <div className = "flex flex-1 flex-row p-2">
+            <div className = "flex flex-1 flex-row p-2 gap-1">
                 <Textarea
                     className = "flex-1 text-sm text-zinc-500 font-semibold resize-none overflow-hidden"
                     ref = {textAreaRef}
