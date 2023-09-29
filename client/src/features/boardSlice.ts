@@ -3,7 +3,7 @@ import { RootState } from '../app/store';
 import { ITask } from "@/types/task";
 import { IColumn } from "@/types/column";
 import { IBoardApi, IColumnApi } from "@/types/api";
-import { getColumns, getTasks, addColumn as handleAddColumn } from "@/features/boardApi"
+import { getColumns, getTasks, addColumn as handleAddColumn, deleteColumn as handleDeleteColumn } from "@/features/boardApi"
 import { AxiosResponse } from "axios";
 
 interface BoardState {
@@ -52,6 +52,9 @@ export const boardSlice = createSlice({
                 // Column added to database successfully, now need to render UI
                 state.columns[action.payload.column._id] = action.payload.column;
             })
+            .addCase(deleteColumn.fulfilled, (state, action) => {
+                delete state.columns[action.payload];
+            })
     }
 });
 
@@ -75,6 +78,14 @@ export const addColumn = createAsyncThunk(
         return response.data;
     }
 );
+
+export const deleteColumn = createAsyncThunk(
+    'board/deleteColumn',
+    async(columnId: string) => {
+        await handleDeleteColumn(columnId);
+        return columnId;
+    }
+)
 
 // export const {
 //
