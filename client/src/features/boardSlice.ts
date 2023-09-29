@@ -3,7 +3,10 @@ import { RootState } from '../app/store';
 import { ITask } from "@/types/task";
 import { IColumn } from "@/types/column";
 import { IBoardApi, IColumnApi } from "@/types/api";
-import { getColumns, getTasks, addColumn as handleAddColumn, deleteColumn as handleDeleteColumn } from "@/features/boardApi"
+import {
+    getColumns, getTasks, addColumn as handleAddColumn, deleteColumn as handleDeleteColumn,
+    addTask as handleAddTask
+} from "@/features/boardApi"
 import { AxiosResponse } from "axios";
 
 interface BoardState {
@@ -55,6 +58,9 @@ export const boardSlice = createSlice({
             .addCase(deleteColumn.fulfilled, (state, action) => {
                 delete state.columns[action.payload];
             })
+            .addCase(addTask.fulfilled, (state, action) => {
+                state.tasks[action.payload.task._id] = action.payload.task;
+            })
     }
 });
 
@@ -87,8 +93,18 @@ export const deleteColumn = createAsyncThunk(
     }
 )
 
+export const addTask = createAsyncThunk(
+    'board/addTask',
+    async(data: {
+        task: Omit<ITask, "_id">,
+        columnId: string
+    }) => {
+        const response = await handleAddTask(data.columnId, data.task);
+        return response.data;
+    }
+)
+
 // export const {
-//
 // } = boardSlice.actions;
 
 export const selectState = (state: RootState) => state.board.state;

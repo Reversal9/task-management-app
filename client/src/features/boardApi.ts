@@ -1,6 +1,7 @@
 import axios, { AxiosResponse } from "axios";
 import { IColumnApi, ITaskApi } from "@/types/api";
 import { IColumn } from "@/types/column";
+import { ITask } from "@/types/task";
 
 export const getColumns = async(): Promise<AxiosResponse<IColumnApi>> => {
     return await axios.get("/api/columns");
@@ -16,4 +17,9 @@ export const addColumn = async(column: Omit<IColumn, "_id">): Promise<AxiosRespo
 
 export const deleteColumn = async(columnId: string): Promise<AxiosResponse<IColumnApi>> => {
     return await axios.delete(`/api/columns/${columnId}`);
+}
+
+export const addTask = async(columnId: string, task: Omit<ITask, "_id">): Promise<AxiosResponse<ITaskApi>> => {
+    const data = { columnId, ...task };
+    return await axios.post("/api/tasks", data);
 }
