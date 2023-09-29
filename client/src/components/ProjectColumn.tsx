@@ -40,8 +40,8 @@ const ProjectColumn: React.FC<Props> = ({ columnId }: Props): React.ReactElement
             <div className = "flex flex-row items-middle p-1">
                 <p className = "flex-1 text-sm text-zinc-500 font-semibold py-2">{column.title}</p>
                 <DropdownMenu>
-                    <DropdownMenuTrigger>
-                        <Button className = "opacity-0 hover:opacity-100" variant = "task" size = "icon"><MoreHorizontalIcon></MoreHorizontalIcon></Button>
+                    <DropdownMenuTrigger className = "rounded-md opacity-0 hover:opacity-100 hover:text-accent-foreground hover:bg-slate-600/20 p-1">
+                        <MoreHorizontalIcon></MoreHorizontalIcon>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent>
                         <DropdownMenuItem onClick={() => dispatch(deleteColumn(columnId))}>
