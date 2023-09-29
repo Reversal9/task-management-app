@@ -1,12 +1,12 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef } from "react";
 import { Textarea as Text } from "@/components/ui/textarea";
 
 interface Props {
-    summary: string
+    onChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void,
+    value: string
 }
 
-const Textarea: React.FC<Props> = ({ summary }: Props) => {
-    const [value, setValue] = useState(summary);
+const Textarea: React.FC<Props> = ({ onChange, value }: Props) => {
     const textAreaRef = useRef<HTMLTextAreaElement>(null);
     
     useEffect(() => {
@@ -19,7 +19,7 @@ const Textarea: React.FC<Props> = ({ summary }: Props) => {
     return <Text
         className = "flex-1 text-sm text-zinc-500 font-semibold resize-none overflow-hidden"
         ref = {textAreaRef}
-        onChange = {(e) => setValue(e.target.value)}
+        onChange = {onChange}
         value = {value}>
     </Text>
 };
