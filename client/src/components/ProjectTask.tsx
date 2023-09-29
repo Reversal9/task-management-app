@@ -1,11 +1,11 @@
-import React, { useState } from "react";
+import React from "react";
 import { ITask } from "@/types/task";
 import { useAppSelector } from "@/app/hooks";
 import { Button } from "@/components/ui/button";
 import { MoreHorizontalIcon } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { selectTaskById } from "@/features/boardSlice";
-import InputField from "@/components/InputField";
+import { Summary } from "@/components/InputField";
 
 interface Props {
     taskId: string
@@ -13,14 +13,13 @@ interface Props {
 
 const ProjectTask: React.FC<Props> = ({ taskId }: Props): React.ReactElement | undefined => {
     const task: ITask = useAppSelector<ITask>((state) => selectTaskById(state, taskId));
-    const [value, setValue] = useState(task?.summary);
     
     if (!task) return undefined;
     
     return (
         <div className = "flex flex-col bg-white shadow-lg rounded-lg">
             <div className = "flex flex-1 flex-row p-2 gap-1">
-                <InputField onChange = {(e: React.ChangeEvent<HTMLTextAreaElement>) => setValue(e.target.value)} value = {value}></InputField>
+                <Summary taskId = {taskId}></Summary>
                 <Button variant = "task" size = "icon"><MoreHorizontalIcon></MoreHorizontalIcon></Button>
             </div>
             <div className = "flex flex-1 flex-row items-center p-2">

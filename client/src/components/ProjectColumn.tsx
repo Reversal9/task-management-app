@@ -12,6 +12,7 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { ITask } from "@/types/task";
+import { ColumnTitle } from "@/components/InputField.tsx";
 
 interface Props {
     columnId: string
@@ -37,8 +38,8 @@ const ProjectColumn: React.FC<Props> = ({ columnId }: Props): React.ReactElement
     
     return (
         <div className = "flex flex-col min-h-mc w-64 p-1 bg-gray-200/50 rounded-lg gap-1">
-            <div className = "flex flex-row items-middle p-1">
-                <p className = "flex-1 text-sm text-zinc-500 font-semibold py-2">{column.title}</p>
+            <div className = "flex flex-row items-center p-1 gap-1">
+                <ColumnTitle columnId = {columnId}></ColumnTitle>
                 <DropdownMenu>
                     <DropdownMenuTrigger className = "rounded-md opacity-0 hover:opacity-100 hover:text-accent-foreground hover:bg-slate-600/20 p-1">
                         <MoreHorizontalIcon></MoreHorizontalIcon>
