@@ -1,6 +1,6 @@
 import React from "react";
 import { Button } from "@/components/ui/button"
-import { ToggleThemeButton } from "@/components/Button";
+import { ToggleThemeButton } from "@/components/ToggleThemeButton";
 import { GithubIcon, InstagramIcon, TwitterIcon } from "lucide-react";
 
 const Navbar: React.FC = () => {
