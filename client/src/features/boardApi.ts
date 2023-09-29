@@ -30,4 +30,8 @@ export const deleteTask = async(taskId: string): Promise<AxiosResponse<ITaskApi>
 
 export const updateColumn = async(column: IColumn): Promise<AxiosResponse<IColumnApi>> => {
     return await axios.put(`/api/columns/${column._id}`, column);
+};
+
+export const updateTask = async(task: ITask): Promise<AxiosResponse<ITaskApi>> => {
+    return await axios.put(`/api/tasks/${task._id}`, task);
 }

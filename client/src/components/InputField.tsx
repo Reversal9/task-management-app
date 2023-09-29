@@ -2,8 +2,9 @@ import React, { useEffect, useRef, useState } from "react";
 import { Textarea as Text } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
-import { selectColumnById, updateColumn } from "@/features/boardSlice";
+import { selectColumnById, selectTaskById, updateColumn, updateTask } from "@/features/boardSlice";
 import { IColumn } from "@/types/column";
+import { ITask } from "@/types/task";
 
 interface ColumnProps {
     columnId: string
@@ -11,7 +12,7 @@ interface ColumnProps {
 
 export const ColumnTitle: React.FC<ColumnProps> = ({ columnId }: ColumnProps) => {
     const dispatch = useAppDispatch();
-    const column: IColumn = useAppSelector((state) => selectColumnById(state, columnId));
+    const column: IColumn = useAppSelector<IColumn>((state) => selectColumnById(state, columnId));
     const [value, setValue] = useState<string>(column.title);
     
     async function handleBlur() {
@@ -45,9 +46,9 @@ interface SummaryProps {
 
 export const Summary: React.FC<SummaryProps> = ({ taskId }: SummaryProps) => {
     const dispatch = useAppDispatch();
-    const initialState: string = useAppSelector(state => state.board.tasks[taskId].summary);
+    const task: ITask = useAppSelector<ITask>(state => selectTaskById(state, taskId));
     const textAreaRef: React.RefObject<HTMLTextAreaElement> = useRef<HTMLTextAreaElement>(null);
-    const [value, setValue] = useState<string>(initialState);
+    const [value, setValue] = useState<string>(task.summary);
     
     useEffect(() => {
         if (textAreaRef.current) {
@@ -55,6 +56,17 @@ export const Summary: React.FC<SummaryProps> = ({ taskId }: SummaryProps) => {
             textAreaRef.current.style.height = `${textAreaRef.current.scrollHeight}px`;
         }
     }, [value]);
+    
+    async function handleBlur() {
+        const newTask: ITask = {
+            ...task,
+            summary: value
+        }
+        await dispatch(updateTask(newTask)).unwrap().catch(() => {
+            //error handle here
+            setValue(task.summary);
+        });
+    }
     
     return <Text
         className = "flex-1 text-sm text-zinc-800 font-semibold resize-none overflow-hidden"
@@ -65,9 +77,7 @@ export const Summary: React.FC<SummaryProps> = ({ taskId }: SummaryProps) => {
                 e.currentTarget.blur();
             }
         }}
-        onBlur = {() => {
-        
-        }}
+        onBlur = {handleBlur}
         value = {value}>
     </Text>
 };
