@@ -23,3 +23,7 @@ export const addTask = async(columnId: string, task: Omit<ITask, "_id">): Promis
     const data = { columnId, ...task };
     return await axios.post("/api/tasks", data);
 }
+
+export const deleteTask = async(taskId: string): Promise<AxiosResponse<ITaskApi>> => {
+    return await axios.delete(`/api/tasks/${taskId}`);
+}

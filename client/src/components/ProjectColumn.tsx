@@ -53,7 +53,7 @@ const ProjectColumn: React.FC<Props> = ({ columnId }: Props): React.ReactElement
                 </DropdownMenu>
             </div>
             {column.taskIds.map((taskId: string) => {
-                return <ProjectTask key = {taskId} taskId = {taskId}></ProjectTask>
+                return <ProjectTask key = {taskId} taskId = {taskId} columnId = {columnId}></ProjectTask>
             })}
             <Button className = "flex flex-row gap-1" variant = "task" size = "lg" onClick={() => dispatch(addTask(newData))}>
                 <PlusIcon size = {16} strokeWidth = {3} color = "#52525B"></PlusIcon>
