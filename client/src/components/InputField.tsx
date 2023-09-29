@@ -2,6 +2,8 @@ import React, { useEffect, useRef, useState } from "react";
 import { Textarea as Text } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
+import { selectColumnById, updateColumn } from "@/features/boardSlice";
+import { IColumn } from "@/types/column";
 
 interface ColumnProps {
     columnId: string
@@ -9,8 +11,19 @@ interface ColumnProps {
 
 export const ColumnTitle: React.FC<ColumnProps> = ({ columnId }: ColumnProps) => {
     const dispatch = useAppDispatch();
-    const initialState: string = useAppSelector(state => state.board.columns[columnId].title);
-    const [value, setValue] = useState<string>(initialState);
+    const column: IColumn = useAppSelector((state) => selectColumnById(state, columnId));
+    const [value, setValue] = useState<string>(column.title);
+    
+    async function handleBlur() {
+        const newColumn: IColumn = {
+            ...column,
+            title: value
+        }
+        await dispatch(updateColumn(newColumn)).unwrap().catch(() => {
+            //error handle here
+            setValue(column.title);
+        });
+    }
     
     return <Input
         className = "flex-1 h-5 text-sm text-zinc-500 font-semibold resize-none overflow-hidden bg-transparent border-none hover:bg-slate-600/10 focus:bg-white truncate"
@@ -21,8 +34,7 @@ export const ColumnTitle: React.FC<ColumnProps> = ({ columnId }: ColumnProps) =>
                 e.currentTarget.blur();
             }
         }}
-        onBlur = {() => {
-        }}
+        onBlur = {handleBlur}
         value = {value}>
     </Input>
 };
