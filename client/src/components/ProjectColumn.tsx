@@ -2,20 +2,16 @@ import React from "react";
 import { IColumn } from "@/types/column";
 import { useAppSelector } from "@/app/hooks";
 import ProjectTask from "@/components/ProjectTask";
-import { RootState } from "@/app/store";
 import { Button } from "@/components/ui/button";
 import { MoreHorizontalIcon, PlusIcon } from "lucide-react";
+import { selectColumnById } from "@/features/boardSlice";
 
 interface Props {
     columnId: string
 }
 
-const ProjectColumn: React.FC<Props> = ({ columnId }: Props): React.ReactElement | undefined => {
-    const column: IColumn = useAppSelector<IColumn>((state: RootState) => {
-        return state.board.columns[columnId];
-    });
-
-    if (!column) return;
+const ProjectColumn: React.FC<Props> = ({ columnId }: Props): React.ReactElement => {
+    const column: IColumn = useAppSelector<IColumn>((state) => selectColumnById(state, columnId));
     
     return (
         <div className = "flex flex-col min-h-mc w-64 p-1 bg-gray-200/50 rounded-lg gap-1">

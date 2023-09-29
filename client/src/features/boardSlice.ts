@@ -1,11 +1,13 @@
-import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { RootState, AppThunk } from '../app/store';
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { RootState } from '../app/store';
 import { ITask } from "@/types/task";
 import { IColumn } from "@/types/column";
+import { IBoardApi } from "@/types/api";
 import { getColumns, getTasks } from "@/features/boardApi"
 
-export interface BoardState {
-    state: "loading" | "idle" | "pending" | "success",
+interface BoardState {
+    state: "idle" | "loading" | "succeeded" | "failed",
+    error: string | undefined,
     columns: {
         [columnId: string]: IColumn
     },
@@ -15,7 +17,8 @@ export interface BoardState {
 }
 
 const initialState: BoardState = {
-    state: "loading",
+    state: "idle",
+    error: undefined,
     columns: {},
     tasks: {}
 };
@@ -24,40 +27,50 @@ export const boardSlice = createSlice({
     name: "board",
     initialState,
     reducers: {
-        setColumns: (state, action: { payload: IColumn[] }) => {
-            state.columns = {};
-            for (const column of action.payload) {
-                state.columns[column._id] = column;
-            }
-        },
-        setTasks: (state, action: { payload: ITask[] }) => {
-            state.tasks = {};
-            for (const task of action.payload) {
-                state.tasks[task._id] = task;
-            }
-        }
+
     },
-    // extraReducers: (builder) => {
-    //     builder
-    //         .addCase
-    // }
+    extraReducers: (builder) => {
+        builder
+            .addCase(fetchBoard.pending, (state) => {
+                state.state = "loading";
+            })
+            .addCase(fetchBoard.fulfilled, (state, action) => {
+                state.state = "succeeded";
+                for (const task of action.payload.tasksResponse.tasks) {
+                    state.tasks[task._id] = task;
+                }
+                for (const column of action.payload.columnsResponse.columns) {
+                    state.columns[column._id] = column;
+                }
+            })
+            .addCase(fetchBoard.rejected, (state, action) => {
+                state.state = "failed";
+                state.error = action.error.message;
+            })
+    }
 });
 
-// export const getColumns = createAsyncThunk(
-//     'board/getColumns',
-//     async () => {
-//         const response = await getColumns();
-//         // The value we return becomes the `fulfilled` action payload
-//         return response.data;
-//     }
-// );
+export const fetchBoard = createAsyncThunk(
+    'board/fetchBoard',
+    async () => {
+        const columnsResponse = await getColumns();
+        const tasksResponse = await getTasks();
+        const data: IBoardApi = {
+            columnsResponse: columnsResponse.data,
+            tasksResponse: tasksResponse.data,
+        }
+        return data;
+    }
+);
 
-export const {
-    setColumns,
-    setTasks
-} = boardSlice.actions;
+// export const {
+//
+// } = boardSlice.actions;
 
-export const selectColumnIds = (state: RootState) => Object.values(state.board.columns).map(column => column._id);
 export const selectState = (state: RootState) => state.board.state;
+export const selectError = (state: RootState) => state.board.error;
+export const selectColumnIds = (state: RootState) => Object.values(state.board.columns).map(column => column._id);
+export const selectColumnById = (state: RootState, columnId: string) => state.board.columns[columnId];
+export const selectTaskById = (state: RootState, taskId: string) => state.board.tasks[taskId];
 
 export default boardSlice.reducer;

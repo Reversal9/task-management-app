@@ -15,3 +15,8 @@ export interface ITaskApi extends IApiDataType {
     tasks: ITask[],
     task?: ITask
 }
+
+export interface IBoardApi {
+    columnsResponse: IColumnApi,
+    tasksResponse: ITaskApi
+}
