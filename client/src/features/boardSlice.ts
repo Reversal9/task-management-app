@@ -2,8 +2,9 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { RootState } from '../app/store';
 import { ITask } from "@/types/task";
 import { IColumn } from "@/types/column";
-import { IBoardApi } from "@/types/api";
-import { getColumns, getTasks } from "@/features/boardApi"
+import { IBoardApi, IColumnApi } from "@/types/api";
+import { getColumns, getTasks, addColumn as handleAddColumn } from "@/features/boardApi"
+import { AxiosResponse } from "axios";
 
 interface BoardState {
     state: "idle" | "loading" | "succeeded" | "failed",
@@ -47,6 +48,10 @@ export const boardSlice = createSlice({
                 state.state = "failed";
                 state.error = action.error.message;
             })
+            .addCase(addColumn.fulfilled, (state, action) => {
+                // Column added to database successfully, now need to render UI
+                state.columns[action.payload.column._id] = action.payload.column;
+            })
     }
 });
 
@@ -60,6 +65,14 @@ export const fetchBoard = createAsyncThunk(
             tasksResponse: tasksResponse.data,
         }
         return data;
+    }
+);
+
+export const addColumn = createAsyncThunk(
+    'board/addColumn',
+    async(column: Omit<IColumn, "_id">) => {
+        const response: AxiosResponse<IColumnApi> = await handleAddColumn(column);
+        return response.data;
     }
 );
 
