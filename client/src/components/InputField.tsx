@@ -36,7 +36,8 @@ export const ColumnTitle: React.FC<ColumnProps> = ({ columnId }: ColumnProps) =>
             }
         }}
         onBlur = {handleBlur}
-        value = {value}>
+        value = {value}
+        spellCheck = {false}>
     </Input>
 };
 
@@ -78,6 +79,7 @@ export const Summary: React.FC<SummaryProps> = ({ taskId }: SummaryProps) => {
             }
         }}
         onBlur = {handleBlur}
-        value = {value}>
+        value = {value}
+        spellCheck = {false}>
     </Text>
 };
