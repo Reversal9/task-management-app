@@ -48,9 +48,9 @@ const ProjectContent: React.FC = (): React.ReactElement | undefined => {
                 </Button>
             :
                 <div className = "flex flex-row gap-2">
-                    <div className = "flex flex-col min-h-mc w-64 p-2 bg-gray-200/50 rounded-sm gap-1">
+                    <div className = "flex min-h-mc w-64 p-3 bg-gray-200/50 rounded-sm gap-1">
                         <Input
-                            className = "h-5 text-sm text-zinc-500 font-semibold resize-none overflow-hidden bg-transparent border-none hover:bg-slate-600/10 focus:bg-white truncate"
+                            className = "h-6 text-sm text-zinc-500 font-semibold resize-none overflow-hidden bg-transparent border-none hover:bg-slate-600/10 focus:bg-white truncate"
                             maxLength = {30}
                             onChange = {(e) => setNewColumnValue(e.target.value)}
                             onKeyDown = {(e) => {
