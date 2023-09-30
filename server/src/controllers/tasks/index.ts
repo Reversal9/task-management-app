@@ -55,7 +55,7 @@ const addTask = async(req: Request, res: Response) => {
 const updateTask = async(req: Request, res: Response) => {
     try {
         const {
-            params: id,
+            params: { id },
             body
         } = req;
         const updatedTask: ITask | null = await Task.findByIdAndUpdate(

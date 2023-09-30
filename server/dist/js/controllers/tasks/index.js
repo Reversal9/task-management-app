@@ -46,7 +46,7 @@ const addTask = async (req, res) => {
 exports.addTask = addTask;
 const updateTask = async (req, res) => {
     try {
-        const { params: id, body } = req;
+        const { params: { id }, body } = req;
         const updatedTask = await task_1.default.findByIdAndUpdate({ _id: id }, body);
         const allTasks = await task_1.default.find();
         res.status(200).json({
