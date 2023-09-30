@@ -4,7 +4,7 @@ import { addColumn, selectColumnIds } from "@/features/boardSlice";
 import ProjectColumn from "@/components/ProjectColumn";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { PlusIcon } from "lucide-react";
+import { Check, PlusIcon, X } from "lucide-react";
 import { IColumn } from "@/types/column";
 
 const ProjectContent: React.FC = (): React.ReactElement | undefined => {
@@ -47,27 +47,34 @@ const ProjectContent: React.FC = (): React.ReactElement | undefined => {
                     <PlusIcon size = {24} strokeWidth = {2} color = "#52525B"></PlusIcon>
                 </Button>
             :
-                <div className = "flex flex-row gap-2">
-                    <div className = "flex min-h-mc w-64 p-3 bg-gray-200/50 rounded-sm gap-1">
-                        <Input
-                            className = "h-6 text-sm text-zinc-500 font-semibold resize-none overflow-hidden bg-transparent border-none hover:bg-slate-600/10 focus:bg-white truncate"
-                            maxLength = {30}
-                            onChange = {(e) => setNewColumnValue(e.target.value)}
-                            onKeyDown = {(e) => {
-                                if (e.key === "Escape") {
-                                    e.currentTarget.blur();
-                                }
-                                if (e.key === "Enter") {
-                                    handleAddColumn();
-                                }
-                            }}
-                            onBlur = {handleBlur}
-                            value = {newColumnValue}
-                            spellCheck = {false}
-                            autoFocus>
-                        </Input>
+                <div className = "flex flex-col min-h-mc w-64 p-3 bg-gray-200/50 rounded-sm gap-1">
+                    <Input
+                        className = "h-6 text-sm text-zinc-500 font-semibold resize-none overflow-hidden bg-transparent border-none hover:bg-slate-600/10 focus:bg-white truncate"
+                        maxLength = {30}
+                        onChange = {(e) => setNewColumnValue(e.target.value)}
+                        onKeyDown = {(e) => {
+                            if (e.key === "Escape") {
+                                e.currentTarget.blur();
+                            }
+                            if (e.key === "Enter") {
+                                handleAddColumn();
+                            }
+                        }}
+                        onBlur = {handleBlur}
+                        value = {newColumnValue}
+                        spellCheck = {false}
+                        autoFocus>
+                    </Input>
+                    <div className = "flex flex-row justify-end gap-1">
+                        <Button className = "bg-gray-200/50 shadow-md rounded-sm aspect-square" variant = "task" size = "icon" onClick ={() => {
+                            handleAddColumn();
+                        }}>
+                            <Check size = {24} strokeWidth = {2} color = "#52525B"></Check>
+                        </Button>
+                        <Button className = "bg-gray-200/50 shadow-md rounded-sm aspect-square" variant = "task" size = "icon">
+                            <X size = {24} strokeWidth = {2} color = "#52525B"></X>
+                        </Button>
                     </div>
-                    
                 </div>
             }
         </div>
