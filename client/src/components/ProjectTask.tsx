@@ -32,7 +32,7 @@ const ProjectTask: React.FC<Props> = ({ taskId, columnId }: Props): React.ReactE
     }
     
     return (
-        <div className = "flex flex-col bg-white shadow-lg rounded-lg">
+        <div className = "flex flex-col bg-white shadow-lg rounded-sm">
             <div className = "flex flex-1 flex-row p-2 gap-1">
                 <Summary taskId = {taskId}></Summary>
                 <DropdownMenu>

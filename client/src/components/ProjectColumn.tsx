@@ -37,11 +37,11 @@ const ProjectColumn: React.FC<Props> = ({ columnId }: Props): React.ReactElement
     }
     
     return (
-        <div className = "flex flex-col min-h-mc w-64 p-1 bg-gray-200/50 rounded-lg gap-1">
+        <div className = "flex flex-col min-h-mc w-64 p-1 bg-gray-200/50 rounded-sm gap-1">
             <div className = "flex flex-row items-center p-1 gap-1">
                 <ColumnTitle columnId = {columnId}></ColumnTitle>
                 <DropdownMenu>
-                    <DropdownMenuTrigger className = "rounded-md opacity-0 hover:opacity-100 hover:text-accent-foreground hover:bg-slate-600/20 p-1">
+                    <DropdownMenuTrigger className = "rounded-sm opacity-0 hover:opacity-100 hover:text-accent-foreground hover:bg-slate-600/20 p-1">
                         <MoreHorizontalIcon></MoreHorizontalIcon>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent>

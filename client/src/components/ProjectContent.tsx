@@ -41,14 +41,14 @@ const ProjectContent: React.FC = (): React.ReactElement | undefined => {
                 return <ProjectColumn key = {columnId} columnId = {columnId}></ProjectColumn>
             })}
             {!isAddingNewColumn ?
-                <Button className = "bg-gray-200/50 rounded-lg aspect-square" variant = "task" size = "icon" onClick ={() => {
+                <Button className = "bg-gray-200/50 rounded-sm aspect-square" variant = "task" size = "icon" onClick ={() => {
                     setIsAddingNewColumn(true);
                 }}>
                     <PlusIcon size = {24} strokeWidth = {2} color = "#52525B"></PlusIcon>
                 </Button>
             :
                 <div className = "flex flex-row gap-2">
-                    <div className = "flex flex-col min-h-mc w-64 p-2 bg-gray-200/50 rounded-lg gap-1">
+                    <div className = "flex flex-col min-h-mc w-64 p-2 bg-gray-200/50 rounded-sm gap-1">
                         <Input
                             className = "h-5 text-sm text-zinc-500 font-semibold resize-none overflow-hidden bg-transparent border-none hover:bg-slate-600/10 focus:bg-white truncate"
                             maxLength = {30}
