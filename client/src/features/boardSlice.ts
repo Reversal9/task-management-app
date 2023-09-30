@@ -60,7 +60,8 @@ export const boardSlice = createSlice({
                 delete state.columns[action.payload];
             })
             .addCase(addTask.fulfilled, (state, action) => {
-                state.tasks[action.payload.task._id] = action.payload.task;
+                state.tasks[action.payload.data.task._id] = action.payload.data.task;
+                state.columns[action.payload.columnId].taskIds.push(action.payload.data.task._id);
             })
             .addCase(deleteTask.fulfilled, (state, action) => {
                 const taskIds: string[] = state.columns[action.payload.columnId].taskIds;
@@ -111,7 +112,10 @@ export const addTask = createAsyncThunk(
         columnId: string
     }) => {
         const response = await handleAddTask(data.columnId, data.task);
-        return response.data;
+        return {
+            data: response.data,
+            columnId: data.columnId
+        };
     }
 );
 
