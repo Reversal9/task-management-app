@@ -11,7 +11,7 @@ const ProjectContent: React.FC = (): React.ReactElement | undefined => {
     const columnIds: string[] = useAppSelector<string[]>(selectColumnIds);
     
     const newColumn: Omit<IColumn, "_id"> = {
-        title: "Test title",
+        title: "New Title",
         taskIds: []
     }
     

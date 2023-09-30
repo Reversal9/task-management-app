@@ -1,9 +1,6 @@
 import { Response, Request } from "express";
 import { ITask } from "../../types/task";
 import Task from "../../models/task";
-import { IMember } from "../../types/member";
-import Member from "../../models/member";
-import { IColumn } from "../../types/column";
 import mongoose from "mongoose";
 import Column from "../../models/column";
 

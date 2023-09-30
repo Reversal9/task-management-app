@@ -25,7 +25,7 @@ const ProjectColumn: React.FC<Props> = ({ columnId }: Props): React.ReactElement
     if (!column) return undefined;
     
     const newTask: Omit<ITask, "_id"> = {
-        summary: "hey this is a summary",
+        summary: "New Summary",
     }
     
     const newData: {
