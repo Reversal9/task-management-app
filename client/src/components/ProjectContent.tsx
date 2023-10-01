@@ -9,7 +9,7 @@ import { shallowEqual } from "react-redux";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { Form, FormControl, FormField, FormItem } from "@/components/ui/form.tsx";
+import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
 
 const ProjectContent: React.FC = (): React.ReactElement | undefined => {
     const dispatch = useAppDispatch();
