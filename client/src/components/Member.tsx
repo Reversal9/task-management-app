@@ -59,9 +59,9 @@ const Member: React.FC<Props> = ({ memberId }: Props) => {
     return (
         <Dialog open = {open} onOpenChange = {setOpen}>
             <DialogTrigger asChild>
-                <Avatar>
+                <Avatar className = "cursor-pointer">
                     <AvatarFallback>
-                    
+                        {`${member.firstName[0]}${member.lastName[0]}`}
                     </AvatarFallback>
                 </Avatar>
             </DialogTrigger>

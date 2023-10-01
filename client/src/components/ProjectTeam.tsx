@@ -51,7 +51,7 @@ const ProjectTeam: React.FC = () => {
     return (
         <div className = "flex flex-row gap-1">
             {members.map((memberId: string) => (
-                <Member memberId = {memberId}></Member>
+                <Member key = {memberId} memberId = {memberId}></Member>
             ))}
             <Dialog open = {open} onOpenChange = {setOpen}>
                 <DialogTrigger className = "flex h-10 w-10 shrink-0 overflow-hidden items-center justify-center rounded-full bg-muted">
