@@ -46,7 +46,7 @@ const Member: React.FC<Props> = ({ memberId }: Props) => {
         if (!open) {
             form.reset();
         }
-    }, [form, open])
+    }, [form, open]);
     
     function onSubmit(values: z.infer<typeof schema>) {
         dispatch(updateMember({

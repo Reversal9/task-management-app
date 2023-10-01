@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
     Dialog,
     DialogContent,
@@ -36,6 +36,13 @@ const ProjectTeam: React.FC = () => {
             lastName: ""
         }
     });
+    
+    useEffect(() => {
+        // When dialog closes...
+        if (!open) {
+            form.reset();
+        }
+    }, [form, open]);
     
     function onSubmit(values: z.infer<typeof schema>) {
         dispatch(addMember({
