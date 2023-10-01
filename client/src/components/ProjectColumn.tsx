@@ -119,9 +119,7 @@ const ProjectColumn: React.FC<Props> = ({ columnId }: Props): React.ReactElement
                             </FormItem>
                         )} />
                         <div className = "flex flex-row justify-end gap-1">
-                            <Button className = "bg-gray-200/95 shadow-md rounded-sm aspect-square" ref = {confirmButtonRef} variant = "task" size = "icon" onClick ={() => {
-                                form.handleSubmit(onSubmit);
-                            }}>
+                            <Button className = "bg-gray-200/95 shadow-md rounded-sm aspect-square" ref = {confirmButtonRef} variant = "task" size = "icon" type = "submit">
                                 <Check size = {24} strokeWidth = {2} color = "#52525B"></Check>
                             </Button>
                             <Button className = "bg-gray-200/95 shadow-md rounded-sm aspect-square" variant = "task" size = "icon">

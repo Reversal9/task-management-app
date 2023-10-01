@@ -20,6 +20,7 @@ import { Button } from "@/components/ui/button";
 
 const ProjectTeam: React.FC = () => {
     const dispatch = useAppDispatch();
+    const [open, setOpen] = React.useState(false);
     
     const schema = z.object({
         firstName: z.string().min(1).max(30),
@@ -40,8 +41,9 @@ const ProjectTeam: React.FC = () => {
             lastName: values.lastName
         })).unwrap()
             .then(() => {
+                setOpen(false);
                 form.reset();
-            })
+            });
     }
     
     return (
@@ -55,7 +57,7 @@ const ProjectTeam: React.FC = () => {
             <Avatar>
                 <AvatarFallback>T</AvatarFallback>
             </Avatar>
-            <Dialog>
+            <Dialog open = {open} onOpenChange = {setOpen}>
                 <DialogTrigger className = "flex h-10 w-10 shrink-0 overflow-hidden items-center justify-center rounded-full bg-muted">
                     <UserPlus size = {20} strokeWidth = {2} color = "#52525B"></UserPlus>
                 </DialogTrigger>
@@ -65,7 +67,6 @@ const ProjectTeam: React.FC = () => {
                         <DialogDescription>
                             Add a new member of the project here. Click add when you're done.
                         </DialogDescription>
-                        {/*InsertForm*/}
                         <Form {...form}>
                             <form onSubmit = {form.handleSubmit(onSubmit)} className = "flex flex-col gap-2">
                                 <FormField control = {form.control} name = "firstName" render = {({ field }) => (
