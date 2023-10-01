@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
 import { addColumn, selectColumnIds } from "@/features/boardSlice";
 import ProjectColumn from "@/components/ProjectColumn";
@@ -10,6 +10,7 @@ import { IColumn } from "@/types/column";
 const ProjectContent: React.FC = (): React.ReactElement | undefined => {
     const dispatch = useAppDispatch();
     const columnIds: string[] = useAppSelector<string[]>(selectColumnIds);
+    const confirmButtonRef: React.RefObject<HTMLButtonElement> = useRef<HTMLButtonElement>(null);
     
     //Handle add column
     const [isAddingNewColumn, setIsAddingNewColumn] = useState<boolean>(false);
@@ -51,8 +52,8 @@ const ProjectContent: React.FC = (): React.ReactElement | undefined => {
                     <Input
                         className = "h-6 text-sm text-zinc-500 font-semibold resize-none overflow-hidden bg-transparent border-none hover:bg-slate-600/10 focus:bg-white truncate"
                         maxLength = {30}
-                        onChange = {(e) => setNewColumnValue(e.target.value)}
-                        onKeyDown = {(e) => {
+                        onChange = {(e: React.ChangeEvent<HTMLInputElement>) => setNewColumnValue(e.target.value)}
+                        onKeyDown = {(e: React.KeyboardEvent<HTMLInputElement>) => {
                             if (e.key === "Escape") {
                                 e.currentTarget.blur();
                             }
@@ -60,13 +61,17 @@ const ProjectContent: React.FC = (): React.ReactElement | undefined => {
                                 handleAddColumn();
                             }
                         }}
-                        onBlur = {handleBlur}
+                        onBlur = {(e: React.FocusEvent<HTMLInputElement, Element>) => {
+                            if (e.relatedTarget !== confirmButtonRef.current) {
+                                handleBlur();
+                            }
+                        }}
                         value = {newColumnValue}
                         spellCheck = {false}
                         autoFocus>
                     </Input>
                     <div className = "flex flex-row justify-end gap-1">
-                        <Button className = "bg-gray-200/50 shadow-md rounded-sm aspect-square" variant = "task" size = "icon" onClick ={() => {
+                        <Button className = "bg-gray-200/50 shadow-md rounded-sm aspect-square" ref = {confirmButtonRef} variant = "task" size = "icon" onClick ={() => {
                             handleAddColumn();
                         }}>
                             <Check size = {24} strokeWidth = {2} color = "#52525B"></Check>
