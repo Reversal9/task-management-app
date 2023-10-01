@@ -9,10 +9,40 @@ import {
     DialogTrigger
 } from "@/components/ui/dialog";
 import { UserPlus } from "lucide-react";
+import { z } from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { addColumn } from "@/features/boardSlice.ts";
+import { useAppDispatch } from "@/app/hooks.ts";
 // import { Label } from "@/components/ui/label.tsx";
 // import { Input } from "@/components/ui/input.tsx";
 
 const ProjectTeam: React.FC = () => {
+    const dispatch = useAppDispatch();
+    
+    const schema = z.object({
+        firstName: z.string().min(1).max(30),
+        lastName: z.string().min(1).max(30)
+    });
+    
+    const form = useForm<z.infer<typeof schema>>({
+        resolver: zodResolver(schema),
+        defaultValues: {
+            firstName: "",
+            lastName: ""
+        }
+    });
+    
+    // function onSubmit(values: z.infer<typeof schema>) {
+    //     dispatch(addMember({
+    //         firstName: "",
+    //         lastName: ""
+    //     })).unwrap()
+    //         .then(() => {
+    //             form.reset();
+    //         })
+    // }
+    
     return (
         <div className = "flex flex-row gap-1">
             <Avatar>

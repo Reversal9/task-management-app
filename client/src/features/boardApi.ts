@@ -1,7 +1,8 @@
 import axios, { AxiosResponse } from "axios";
-import { IColumnApi, ITaskApi } from "@/types/api";
+import { IColumnApi, IMemberApi, ITaskApi } from "@/types/api";
 import { IColumn } from "@/types/column";
 import { ITask } from "@/types/task";
+import { IMember } from "@/types/member";
 
 export const getColumns = async(): Promise<AxiosResponse<IColumnApi>> => {
     return await axios.get("/api/columns");
@@ -10,6 +11,10 @@ export const getColumns = async(): Promise<AxiosResponse<IColumnApi>> => {
 export const getTasks = async(): Promise<AxiosResponse<ITaskApi>> => {
     return await axios.get("/api/tasks");
 };
+
+export const getMembers = async(): Promise<AxiosResponse<IMemberApi>> => {
+    return await axios.get("/api/members")
+}
 
 export const addColumn = async(column: Omit<IColumn, "_id">): Promise<AxiosResponse<IColumnApi>> => {
     return await axios.post("/api/columns", column);
@@ -34,4 +39,16 @@ export const updateColumn = async(column: IColumn): Promise<AxiosResponse<IColum
 
 export const updateTask = async(task: ITask): Promise<AxiosResponse<ITaskApi>> => {
     return await axios.put(`/api/tasks/${task._id}`, task);
-}
+};
+
+export const addMember = async(member: Omit<IMember, "_id">): Promise<AxiosResponse<IMemberApi>> => {
+    return await axios.post("/api/members", member);
+};
+
+export const deleteMember = async(memberId: string): Promise<AxiosResponse<IMemberApi>> => {
+    return await axios.delete(`/api/members/${memberId}`);
+};
+
+export const updateMember = async(member: IMember): Promise<AxiosResponse<IMemberApi>> => {
+    return await axios.put(`/api/members/${member._id}`, member);
+};

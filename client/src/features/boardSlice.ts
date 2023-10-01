@@ -4,11 +4,13 @@ import { ITask } from "@/types/task";
 import { IColumn } from "@/types/column";
 import { IBoardApi, IColumnApi } from "@/types/api";
 import {
-    getColumns, getTasks, addColumn as handleAddColumn, deleteColumn as handleDeleteColumn,
+    getColumns, getTasks, getMembers, addColumn as handleAddColumn, deleteColumn as handleDeleteColumn,
     addTask as handleAddTask, deleteTask as handleDeleteTask, updateColumn as handleUpdateColumn,
-    updateTask as handleUpdateTask
+    updateTask as handleUpdateTask, addMember as handleAddMember, deleteMember as handleDeleteMember,
+    updateMember as handleUpdateMember
 } from "@/features/boardApi"
 import { AxiosResponse } from "axios";
+import { IMember } from "@/types/member";
 
 interface BoardState {
     state: "idle" | "loading" | "succeeded" | "failed",
@@ -18,6 +20,9 @@ interface BoardState {
     },
     tasks: {
         [taskId: string]: ITask
+    },
+    members: {
+        [memberId: string]: IMember
     }
 }
 
@@ -25,15 +30,14 @@ const initialState: BoardState = {
     state: "idle",
     error: undefined,
     columns: {},
-    tasks: {}
+    tasks: {},
+    members: {}
 };
 
 export const boardSlice = createSlice({
     name: "board",
     initialState,
-    reducers: {
-
-    },
+    reducers: {},
     extraReducers: (builder) => {
         builder
             .addCase(fetchBoard.pending, (state) => {
@@ -47,17 +51,20 @@ export const boardSlice = createSlice({
                 for (const column of action.payload.columnsResponse.columns) {
                     state.columns[column._id] = column;
                 }
+                for (const member of action.payload.membersResponse.members) {
+                    state.members[member._id] = member;
+                }
             })
             .addCase(fetchBoard.rejected, (state, action) => {
                 state.state = "failed";
                 state.error = action.error.message;
             })
             .addCase(addColumn.fulfilled, (state, action) => {
-                // Column added to database successfully, now need to render UI
                 state.columns[action.payload.column._id] = action.payload.column;
             })
             .addCase(deleteColumn.fulfilled, (state, action) => {
                 delete state.columns[action.payload];
+                //need to handle excess tasks lying around
             })
             .addCase(addTask.fulfilled, (state, action) => {
                 state.tasks[action.payload.data.task._id] = action.payload.data.task;
@@ -73,6 +80,15 @@ export const boardSlice = createSlice({
             .addCase(updateTask.fulfilled, (state, action) => {
                 state.tasks[action.payload.task._id] = action.payload.task;
             })
+            .addCase(addMember.fulfilled, (state, action) => {
+                state.members[action.payload.member._id] = action.payload.member;
+            })
+            .addCase(deleteMember.fulfilled, (state, action) => {
+                delete state.members[action.payload];
+            })
+            .addCase(updateMember.fulfilled, (state, action) => {
+                state.members[action.payload.member._id] = action.payload.member;
+            })
     }
 });
 
@@ -81,9 +97,11 @@ export const fetchBoard = createAsyncThunk(
     async () => {
         const columnsResponse = await getColumns();
         const tasksResponse = await getTasks();
+        const membersResponse = await getMembers();
         const data: IBoardApi = {
             columnsResponse: columnsResponse.data,
             tasksResponse: tasksResponse.data,
+            membersResponse: membersResponse.data
         }
         return data;
     }
@@ -144,10 +162,31 @@ export const updateTask = createAsyncThunk(
         const response = await handleUpdateTask(task);
         return response.data;
     }
-)
+);
 
-// export const {
-// } = boardSlice.actions;
+export const addMember = createAsyncThunk(
+    'board/addMember',
+    async(member: Omit<IMember, "_id">) => {
+        const response = await handleAddMember(member);
+        return response.data;
+    }
+);
+
+export const deleteMember = createAsyncThunk(
+    'board/deleteMember',
+    async(memberId: string) => {
+        await handleDeleteMember(memberId);
+        return memberId;
+    }
+);
+
+export const updateMember = createAsyncThunk(
+    'board/updateMember',
+    async(member: IMember) => {
+        const response = await handleUpdateMember(member);
+        return response.data;
+    }
+)
 
 export const selectState = (state: RootState) => state.board.state;
 export const selectError = (state: RootState) => state.board.error;
