@@ -191,7 +191,9 @@ export const updateMember = createAsyncThunk(
 export const selectState = (state: RootState) => state.board.state;
 export const selectError = (state: RootState) => state.board.error;
 export const selectColumnIds = (state: RootState) => Object.values(state.board.columns).map(column => column._id);
+export const selectMemberIds = (state: RootState) => Object.values(state.board.members).map(member => member._id);
 export const selectColumnById = (state: RootState, columnId: string) => state.board.columns[columnId];
 export const selectTaskById = (state: RootState, taskId: string) => state.board.tasks[taskId];
+export const selectMemberById = (state: RootState, memberId: string) => state.board.members[memberId];
 
 export default boardSlice.reducer;

@@ -38,7 +38,7 @@ exports.addMember = addMember;
 const updateMember = async (req, res) => {
     try {
         const { params: { id }, body } = req;
-        const updatedMember = await member_1.default.findByIdAndUpdate({ _id: id }, body);
+        const updatedMember = await member_1.default.findByIdAndUpdate({ _id: id }, body, { new: true });
         const allMembers = await member_1.default.find();
         res.status(200).json({
             message: "Member updated",

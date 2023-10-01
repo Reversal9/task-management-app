@@ -1,5 +1,4 @@
-import React from "react";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import React, { useState } from "react";
 import {
     Dialog,
     DialogContent,
@@ -12,15 +11,18 @@ import { UserPlus } from "lucide-react";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { addMember } from "@/features/boardSlice";
-import { useAppDispatch } from "@/app/hooks";
+import { addMember, selectMemberIds } from "@/features/boardSlice";
+import { useAppDispatch, useAppSelector } from "@/app/hooks";
 import { Form, FormControl, FormField, FormItem, FormLabel } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { shallowEqual } from "react-redux";
+import Member from "./Member";
 
 const ProjectTeam: React.FC = () => {
     const dispatch = useAppDispatch();
-    const [open, setOpen] = React.useState(false);
+    const members: string[] = useAppSelector<string[]>(selectMemberIds, shallowEqual);
+    const [open, setOpen] = useState<boolean>(false);
     
     const schema = z.object({
         firstName: z.string().min(1).max(30),
@@ -48,15 +50,9 @@ const ProjectTeam: React.FC = () => {
     
     return (
         <div className = "flex flex-row gap-1">
-            <Avatar>
-                <AvatarFallback>H</AvatarFallback>
-            </Avatar>
-            <Avatar>
-                <AvatarFallback>A</AvatarFallback>
-            </Avatar>
-            <Avatar>
-                <AvatarFallback>T</AvatarFallback>
-            </Avatar>
+            {members.map((memberId: string) => (
+                <Member memberId = {memberId}></Member>
+            ))}
             <Dialog open = {open} onOpenChange = {setOpen}>
                 <DialogTrigger className = "flex h-10 w-10 shrink-0 overflow-hidden items-center justify-center rounded-full bg-muted">
                     <UserPlus size = {20} strokeWidth = {2} color = "#52525B"></UserPlus>

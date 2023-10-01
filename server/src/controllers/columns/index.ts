@@ -38,7 +38,8 @@ const updateColumn = async(req: Request, res: Response): Promise<void> => {
         } = req;
         const updatedColumn: IColumn | null = await Column.findByIdAndUpdate(
             { _id: id },
-            body
+            body,
+            { new: true }
         );
         const allColumns: IColumn[] = await Column.find();
         res.status(200).json({

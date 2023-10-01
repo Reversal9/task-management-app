@@ -38,7 +38,8 @@ const updateMember = async(req: Request, res: Response): Promise<void> => {
         } = req;
         const updatedMember: IMember | null = await Member.findByIdAndUpdate(
             { _id: id },
-            body
+            body,
+            { new: true }
         );
         const allMembers: IMember[] = await Member.find();
         res.status(200).json({

@@ -38,7 +38,7 @@ exports.addColumn = addColumn;
 const updateColumn = async (req, res) => {
     try {
         const { params: { id }, body } = req;
-        const updatedColumn = await column_1.default.findByIdAndUpdate({ _id: id }, body);
+        const updatedColumn = await column_1.default.findByIdAndUpdate({ _id: id }, body, { new: true });
         const allColumns = await column_1.default.find();
         res.status(200).json({
             message: "Column updated",
