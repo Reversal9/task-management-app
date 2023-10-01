@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
 import { selectMemberById, updateMember } from "@/features/boardSlice";
@@ -40,6 +40,13 @@ const Member: React.FC<Props> = ({ memberId }: Props) => {
             lastName: member.lastName
         }
     });
+    
+    useEffect(() => {
+        // When dialog closes...
+        if (!open) {
+            form.reset();
+        }
+    }, [form, open])
     
     function onSubmit(values: z.infer<typeof schema>) {
         dispatch(updateMember({
