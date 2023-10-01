@@ -88,24 +88,23 @@ const ProjectContent: React.FC = (): React.ReactElement | undefined => {
                                         autoFocus>
                                     </Input>
                                 </FormControl>
-                                <div className = "flex flex-row justify-end gap-1">
-                                    <Button className = "bg-gray-200/50 shadow-md rounded-sm aspect-square" ref = {confirmButtonRef} variant = "task" size = "icon" onClick ={() => {
-                                        form.handleSubmit(onSubmit);
-                                    }}>
-                                        <Check size = {24} strokeWidth = {2} color = "#52525B"></Check>
-                                    </Button>
-                                    <Button className = "bg-gray-200/50 shadow-md rounded-sm aspect-square" variant = "task" size = "icon">
-                                        <X size = {24} strokeWidth = {2} color = "#52525B"></X>
-                                    </Button>
-                                </div>
                             </FormItem>
                         )} />
+                        <div className = "flex flex-row justify-end gap-1">
+                            <Button className = "bg-gray-200/50 shadow-md rounded-sm aspect-square" ref = {confirmButtonRef} variant = "task" size = "icon" onClick ={() => {
+                                form.handleSubmit(onSubmit);
+                            }}>
+                                <Check size = {24} strokeWidth = {2} color = "#52525B"></Check>
+                            </Button>
+                            <Button className = "bg-gray-200/50 shadow-md rounded-sm aspect-square" variant = "task" size = "icon">
+                                <X size = {24} strokeWidth = {2} color = "#52525B"></X>
+                            </Button>
+                        </div>
                     </form>
                 </Form>
             }
         </div>
     );
-    //call dispatch(addColumn(newColumn))
 };
 
 export default ProjectContent;
