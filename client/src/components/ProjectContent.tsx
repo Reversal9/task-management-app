@@ -6,10 +6,11 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Check, PlusIcon, X } from "lucide-react";
 import { IColumn } from "@/types/column";
+import { shallowEqual } from "react-redux";
 
 const ProjectContent: React.FC = (): React.ReactElement | undefined => {
     const dispatch = useAppDispatch();
-    const columnIds: string[] = useAppSelector<string[]>(selectColumnIds);
+    const columnIds: string[] = useAppSelector<string[]>(selectColumnIds, shallowEqual);
     const confirmButtonRef: React.RefObject<HTMLButtonElement> = useRef<HTMLButtonElement>(null);
     
     //Handle add column
