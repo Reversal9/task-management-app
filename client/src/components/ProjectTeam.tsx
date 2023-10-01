@@ -12,10 +12,11 @@ import { UserPlus } from "lucide-react";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { addColumn } from "@/features/boardSlice.ts";
-import { useAppDispatch } from "@/app/hooks.ts";
-// import { Label } from "@/components/ui/label.tsx";
-// import { Input } from "@/components/ui/input.tsx";
+import { addMember } from "@/features/boardSlice";
+import { useAppDispatch } from "@/app/hooks";
+import { Form, FormControl, FormField, FormItem, FormLabel } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 
 const ProjectTeam: React.FC = () => {
     const dispatch = useAppDispatch();
@@ -33,15 +34,15 @@ const ProjectTeam: React.FC = () => {
         }
     });
     
-    // function onSubmit(values: z.infer<typeof schema>) {
-    //     dispatch(addMember({
-    //         firstName: "",
-    //         lastName: ""
-    //     })).unwrap()
-    //         .then(() => {
-    //             form.reset();
-    //         })
-    // }
+    function onSubmit(values: z.infer<typeof schema>) {
+        dispatch(addMember({
+            firstName: values.firstName,
+            lastName: values.lastName
+        })).unwrap()
+            .then(() => {
+                form.reset();
+            })
+    }
     
     return (
         <div className = "flex flex-row gap-1">
@@ -64,6 +65,32 @@ const ProjectTeam: React.FC = () => {
                         <DialogDescription>
                             Add a new member of the project here. Click add when you're done.
                         </DialogDescription>
+                        {/*InsertForm*/}
+                        <Form {...form}>
+                            <form onSubmit = {form.handleSubmit(onSubmit)} className = "flex flex-col gap-2">
+                                <FormField control = {form.control} name = "firstName" render = {({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>First Name</FormLabel>
+                                        <FormControl>
+                                            <Input {...field} maxLength = {30}></Input>
+                                        </FormControl>
+                                    </FormItem>
+                                )} />
+                                <FormField control = {form.control} name = "lastName" render = {({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Last Name</FormLabel>
+                                        <FormControl>
+                                            <Input {...field} maxLength = {30}></Input>
+                                        </FormControl>
+                                    </FormItem>
+                                )} />
+                                <div className = "flex justify-end gap-1">
+                                    <Button variant = "default" size = "default" type = "submit">
+                                        Add
+                                    </Button>
+                                </div>
+                            </form>
+                        </Form>
                     </DialogHeader>
                 </DialogContent>
             </Dialog>
