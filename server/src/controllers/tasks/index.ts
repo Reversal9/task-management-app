@@ -55,11 +55,11 @@ const updateTask = async(req: Request, res: Response) => {
             params: { id },
             body
         } = req;
-        const updatedTask: ITask | null = await Task.findByIdAndUpdate(
+        await Task.replaceOne(
             { _id: id },
-            body,
-            { new: true }
+            body
         );
+        const updatedTask: ITask = body;
         const allTasks: ITask[] = await Task.find();
         res.status(200).json({
             message: "Task updated",

@@ -186,7 +186,7 @@ export const updateMember = createAsyncThunk(
         const response = await handleUpdateMember(member);
         return response.data;
     }
-)
+);
 
 export const selectState = (state: RootState) => state.board.state;
 export const selectError = (state: RootState) => state.board.error;
@@ -197,6 +197,14 @@ export const selectTaskById = (state: RootState, taskId: string) => state.board.
 export const selectMemberById = (state: RootState, memberId: string | undefined) => {
     if (!memberId) return undefined;
     return state.board.members[memberId];
-}
+};
+export const selectMemberNames = (state: RootState) => {
+    return Object.values(state.board.members).map(member => {
+        return {
+            value: member._id,
+            label: `${member.firstName} ${member.lastName}`
+        };
+    });
+};
 
 export default boardSlice.reducer;

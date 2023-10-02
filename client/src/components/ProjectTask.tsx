@@ -1,9 +1,14 @@
-import React from "react";
+import React, { useState } from "react";
 import { ITask } from "@/types/task";
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
-import { MoreHorizontalIcon, TrashIcon, User2 } from "lucide-react";
+import { Check, MoreHorizontalIcon, TrashIcon, User2 } from "lucide-react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { deleteTask, selectMemberById, selectTaskById } from "@/features/boardSlice";
+import {
+    deleteTask,
+    selectMemberById,
+    selectMemberNames,
+    selectTaskById, updateTask
+} from "@/features/boardSlice";
 import { Summary } from "@/components/InputField";
 import {
     DropdownMenu,
@@ -12,6 +17,20 @@ import {
     DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu";
 import { IMember } from "@/types/member";
+import { shallowEqual } from "react-redux";
+import { cn } from "@/lib/utils";
+import {
+    Command,
+    CommandEmpty,
+    CommandGroup,
+    CommandInput,
+    CommandItem,
+} from "@/components/ui/command";
+import {
+    Popover,
+    PopoverContent,
+    PopoverTrigger,
+} from "@/components/ui/popover";
 
 interface Props {
     taskId: string,
@@ -21,7 +40,20 @@ interface Props {
 const ProjectTask: React.FC<Props> = ({ taskId, columnId }: Props): React.ReactElement | undefined => {
     const dispatch = useAppDispatch();
     const task: ITask = useAppSelector<ITask>((state) => selectTaskById(state, taskId));
-    const member: IMember | undefined = useAppSelector<IMember | undefined>((state) => selectMemberById(state, task.memberId));
+    
+    const members: {
+        value: string,
+        label: string
+    }[] = useAppSelector<{
+        value: string,
+        label: string
+    }[]>(selectMemberNames, shallowEqual);
+    
+    const member: IMember | undefined = useAppSelector((state) => selectMemberById(state, task.memberId));
+    const initials: string = `${member?.firstName[0]}${member?.lastName[0]}`;
+    
+    const [open, setOpen] = useState<boolean>(false);
+    const [value, setValue] = useState<string>(task.memberId ?? "");
     
     if (!task) return undefined;
     
@@ -31,7 +63,7 @@ const ProjectTask: React.FC<Props> = ({ taskId, columnId }: Props): React.ReactE
     } = {
         taskId: taskId,
         columnId: columnId
-    }
+    };
     
     return (
         <div className = "flex flex-col bg-white shadow-lg rounded-sm">
@@ -51,16 +83,50 @@ const ProjectTask: React.FC<Props> = ({ taskId, columnId }: Props): React.ReactE
             </div>
             <div className = "flex flex-1 flex-row items-center p-2">
                 <p className = "flex-1 text-sm text-zinc-500 font-semibold resize-none">{task._id}</p>
-                {member ?
-                    <Avatar>
-                        {/*<AvatarImage src = "https://github.com/shadcn.png" alt="@shadcn" />*/}
-                        <AvatarFallback>{`${member.firstName[0]}${member.lastName[0]}`}</AvatarFallback>
-                    </Avatar>
-                :
-                    <div className = "flex h-10 w-10 shrink-0 overflow-hidden items-center justify-center rounded-full bg-muted">
-                        <User2 size = {24} strokeWidth = {2} color = "#52525B"></User2>
-                    </div>
-                }
+                <Popover open={open} onOpenChange={setOpen}>
+                    <PopoverTrigger>
+                        {task.memberId ?
+                            <Avatar>
+                                {/*<AvatarImage src = "https://github.com/shadcn.png" alt="@shadcn" />*/}
+                                <AvatarFallback>{initials}</AvatarFallback>
+                            </Avatar>
+                            :
+                            <div className = "flex h-10 w-10 shrink-0 overflow-hidden items-center justify-center rounded-full bg-muted">
+                                <User2 size = {24} strokeWidth = {2} color = "#52525B"></User2>
+                            </div>
+                        }
+                    </PopoverTrigger>
+                    <PopoverContent className="w-[200px] p-0">
+                        <Command>
+                            <CommandInput placeholder="Search member..." />
+                            <CommandEmpty>No member found.</CommandEmpty>
+                            <CommandGroup>
+                                {members.map((member) => (
+                                    <CommandItem
+                                        key={member.value}
+                                        onSelect={() => {
+                                            setValue(member.value === value ? "" : member.value);
+                                            setOpen(false);
+                                            const updatedTask: ITask = {
+                                                ...task,
+                                                memberId: member.value
+                                            };
+                                            if (member.value === value) delete updatedTask.memberId;
+                                            dispatch(updateTask(updatedTask));
+                                        }}>
+                                        <Check
+                                            className={cn(
+                                                "mr-2 h-4 w-4",
+                                                value === member.value ? "opacity-100" : "opacity-0"
+                                            )}
+                                        />
+                                        {member.label}
+                                    </CommandItem>
+                                ))}
+                            </CommandGroup>
+                        </Command>
+                    </PopoverContent>
+                </Popover>
             </div>
         </div>
     );
