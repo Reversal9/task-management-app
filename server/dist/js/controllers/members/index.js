@@ -5,6 +5,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteMember = exports.updateMember = exports.addMember = exports.getMembers = void 0;
 const member_1 = __importDefault(require("../../models/member"));
+const mongoose_1 = __importDefault(require("mongoose"));
+const task_1 = __importDefault(require("../../models/task"));
 const getMembers = async (req, res) => {
     try {
         const members = await member_1.default.find();
@@ -53,13 +55,18 @@ const updateMember = async (req, res) => {
 exports.updateMember = updateMember;
 const deleteMember = async (req, res) => {
     try {
-        const deletedMember = await member_1.default.findByIdAndRemove(req.params.id);
-        const allMembers = await member_1.default.find();
+        const session = await mongoose_1.default.startSession();
+        session.startTransaction();
+        await task_1.default.updateMany({ memberId: req.params.id }, { $unset: { memberId: 1 } }).session(session);
+        const deletedMember = await member_1.default.findByIdAndRemove(req.params.id).session(session);
+        const allMembers = await member_1.default.find().session(session);
+        await session.commitTransaction();
         res.status(200).json({
             message: "Member deleted",
             member: deletedMember,
             members: allMembers
         });
+        await session.endSession();
     }
     catch (err) {
         throw err;

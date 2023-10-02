@@ -1,6 +1,8 @@
 import { Response, Request } from "express";
 import { IMember } from "../../types/member";
 import Member from "../../models/member";
+import mongoose from "mongoose";
+import Task from "../../models/task";
 
 const getMembers = async(req: Request, res: Response): Promise<void> => {
     try {
@@ -54,13 +56,23 @@ const updateMember = async(req: Request, res: Response): Promise<void> => {
 
 const deleteMember = async(req: Request, res: Response): Promise<void> => {
     try {
-        const deletedMember: IMember | null = await Member.findByIdAndRemove(req.params.id);
-        const allMembers: IMember[] = await Member.find();
+        const session: mongoose.mongo.ClientSession = await mongoose.startSession();
+        session.startTransaction();
+        
+        await Task.updateMany({ memberId: req.params.id }, { $unset: { memberId: 1 } }).session(session);
+        const deletedMember: IMember | null = await Member.findByIdAndRemove(req.params.id).session(session);
+        
+        const allMembers: IMember[] = await Member.find().session(session);
+        
+        await session.commitTransaction();
+        
         res.status(200).json({
             message: "Member deleted",
             member: deletedMember,
             members: allMembers
         });
+        
+        await session.endSession();
     } catch(err) {
         throw err;
     }

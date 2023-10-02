@@ -84,6 +84,10 @@ export const boardSlice = createSlice({
                 state.members[action.payload.member._id] = action.payload.member;
             })
             .addCase(deleteMember.fulfilled, (state, action) => {
+                const tasks: ITask[] = Object.values(state.tasks).filter(task => task.memberId === action.payload);
+                for (const task of tasks) {
+                    delete state.tasks[task._id].memberId;
+                }
                 delete state.members[action.payload];
             })
             .addCase(updateMember.fulfilled, (state, action) => {
