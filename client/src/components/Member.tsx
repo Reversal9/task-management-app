@@ -24,7 +24,7 @@ interface Props {
 
 const Member: React.FC<Props> = ({ memberId }: Props) => {
     const dispatch = useAppDispatch();
-    const member: IMember = useAppSelector<IMember>((state) => selectMemberById(state, memberId));
+    const member: IMember | undefined = useAppSelector<IMember | undefined>((state) => selectMemberById(state, memberId));
     
     const [open, setOpen] = useState<boolean>(false);
     
@@ -36,8 +36,8 @@ const Member: React.FC<Props> = ({ memberId }: Props) => {
     const form = useForm<z.infer<typeof schema>>({
         resolver: zodResolver(schema),
         defaultValues: {
-            firstName: member.firstName,
-            lastName: member.lastName
+            firstName: member?.firstName,
+            lastName: member?.lastName
         }
     });
     
@@ -47,6 +47,8 @@ const Member: React.FC<Props> = ({ memberId }: Props) => {
             form.reset();
         }
     }, [form, open]);
+    
+    if (!member) return undefined;
     
     function onSubmit(values: z.infer<typeof schema>) {
         dispatch(updateMember({

@@ -1,16 +1,17 @@
 import React from "react";
 import { ITask } from "@/types/task";
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
-import { MoreHorizontalIcon, TrashIcon } from "lucide-react";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { deleteTask, selectTaskById } from "@/features/boardSlice";
+import { MoreHorizontalIcon, TrashIcon, User2 } from "lucide-react";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { deleteTask, selectMemberById, selectTaskById } from "@/features/boardSlice";
 import { Summary } from "@/components/InputField";
 import {
     DropdownMenu,
     DropdownMenuContent,
     DropdownMenuItem,
     DropdownMenuTrigger
-} from "@/components/ui/dropdown-menu.tsx";
+} from "@/components/ui/dropdown-menu";
+import { IMember } from "@/types/member";
 
 interface Props {
     taskId: string,
@@ -20,6 +21,7 @@ interface Props {
 const ProjectTask: React.FC<Props> = ({ taskId, columnId }: Props): React.ReactElement | undefined => {
     const dispatch = useAppDispatch();
     const task: ITask = useAppSelector<ITask>((state) => selectTaskById(state, taskId));
+    const member: IMember | undefined = useAppSelector<IMember | undefined>((state) => selectMemberById(state, task.memberId));
     
     if (!task) return undefined;
     
@@ -49,10 +51,16 @@ const ProjectTask: React.FC<Props> = ({ taskId, columnId }: Props): React.ReactE
             </div>
             <div className = "flex flex-1 flex-row items-center p-2">
                 <p className = "flex-1 text-sm text-zinc-500 font-semibold resize-none">{task._id}</p>
-                <Avatar>
-                    <AvatarImage src = "https://github.com/shadcn.png" alt="@shadcn" />
-                    <AvatarFallback>CN</AvatarFallback>
-                </Avatar>
+                {member ?
+                    <Avatar>
+                        {/*<AvatarImage src = "https://github.com/shadcn.png" alt="@shadcn" />*/}
+                        <AvatarFallback>{`${member.firstName[0]}${member.lastName[0]}`}</AvatarFallback>
+                    </Avatar>
+                :
+                    <div className = "flex h-10 w-10 shrink-0 overflow-hidden items-center justify-center rounded-full bg-muted">
+                        <User2 size = {24} strokeWidth = {2} color = "#52525B"></User2>
+                    </div>
+                }
             </div>
         </div>
     );
