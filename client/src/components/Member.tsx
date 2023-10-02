@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
-import { selectMemberById, updateMember } from "@/features/boardSlice";
+import { deleteMember, selectMemberById, updateMember } from "@/features/boardSlice";
 import { IMember } from "@/types/member";
 import {
     Dialog,
@@ -96,7 +96,13 @@ const Member: React.FC<Props> = ({ memberId }: Props) => {
                                     </FormControl>
                                 </FormItem>
                             )} />
-                            <div className = "flex justify-end gap-1">
+                            <div className = "flex flex-row justify-end gap-1">
+                                <Button variant = "destructive" size = "default" onClick = {(e) => {
+                                    e.preventDefault();
+                                    dispatch(deleteMember(memberId));
+                                }}>
+                                    Delete
+                                </Button>
                                 <Button variant = "default" size = "default" type = "submit">
                                     Save
                                 </Button>
