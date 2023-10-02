@@ -5,6 +5,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteColumn = exports.updateColumn = exports.addColumn = exports.getColumns = void 0;
 const column_1 = __importDefault(require("../../models/column"));
+const mongoose_1 = __importDefault(require("mongoose"));
+const task_1 = __importDefault(require("../../models/task"));
 const getColumns = async (req, res) => {
     try {
         const columns = await column_1.default.find();
@@ -53,13 +55,24 @@ const updateColumn = async (req, res) => {
 exports.updateColumn = updateColumn;
 const deleteColumn = async (req, res) => {
     try {
-        const deletedColumn = await column_1.default.findByIdAndRemove(req.params.id);
-        const allColumns = await column_1.default.find();
+        const session = await mongoose_1.default.startSession();
+        session.startTransaction();
+        const deletedColumn = await column_1.default.findByIdAndRemove(req.params.id).session(session);
+        // Handle tasks that are leftover inside deleted column.
+        // Right now, I will be deleting all the tasks.
+        // Later may prompt users to move tasks to another column.
+        if (deletedColumn) {
+            const taskIds = deletedColumn.taskIds;
+            await task_1.default.deleteMany({ "_id": { "$in": taskIds } }).session(session);
+        }
+        const allColumns = await column_1.default.find().session(session);
+        await session.commitTransaction();
         res.status(200).json({
             message: "Column deleted",
             column: deletedColumn,
             columns: allColumns
         });
+        await session.endSession();
     }
     catch (err) {
         throw err;
