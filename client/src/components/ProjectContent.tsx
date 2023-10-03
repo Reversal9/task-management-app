@@ -1,6 +1,6 @@
 import React, { useRef, useState } from "react";
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
-import { addColumn, selectColumnIds } from "@/features/boardSlice";
+import { addColumn, handleDragEnd, selectColumnIds } from "@/features/boardSlice";
 import ProjectColumn from "@/components/ProjectColumn";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -50,7 +50,7 @@ const ProjectContent: React.FC = (): React.ReactElement | undefined => {
     }
     
     const onDragEnd = (result: DropResult) => {
-    
+        dispatch(handleDragEnd(result));
     }
     
     return (
