@@ -83,7 +83,7 @@ const ProjectColumn: React.FC<Props> = ({ columnId }: Props): React.ReactElement
             <Droppable droppableId = {columnId}>
                 {(provided: DroppableProvided) => (
                     <div
-                        className = "flex flex-col gap-1"
+                        className = "flex flex-col"
                         ref = {provided.innerRef}
                         {...provided.droppableProps}>
                             {column.taskIds.map((taskId: string, index: number) => {
