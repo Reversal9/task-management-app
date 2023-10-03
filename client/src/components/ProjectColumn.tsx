@@ -17,6 +17,7 @@ import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Form, FormControl, FormField, FormItem } from "@/components/ui/form.tsx";
+import { Droppable, DroppableProvided } from "react-beautiful-dnd";
 
 interface Props {
     columnId: string
@@ -79,9 +80,19 @@ const ProjectColumn: React.FC<Props> = ({ columnId }: Props): React.ReactElement
                     </DropdownMenuContent>
                 </DropdownMenu>
             </div>
-            {column.taskIds.map((taskId: string) => {
-                return <ProjectTask key = {taskId} taskId = {taskId} columnId = {columnId}></ProjectTask>
-            })}
+            <Droppable droppableId = {columnId}>
+                {(provided: DroppableProvided) => (
+                    <div
+                        className = "flex flex-col gap-1"
+                        ref = {provided.innerRef}
+                        {...provided.droppableProps}>
+                            {column.taskIds.map((taskId: string, index: number) => {
+                                return <ProjectTask key = {taskId} index = {index} taskId = {taskId} columnId = {columnId}></ProjectTask>
+                            })}
+                            {provided.placeholder}
+                    </div>
+                )}
+            </Droppable>
             {!isAddingNewTask ?
                 <Button className = "flex flex-row gap-1" variant = "task" size = "lg" onClick={() => setIsAddingNewTask(true)}>
                     <PlusIcon size = {16} strokeWidth = {3} color = "#52525B"></PlusIcon>
