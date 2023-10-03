@@ -1,6 +1,6 @@
 import React, { useRef, useState } from "react";
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
-import { addColumn, selectColumnIds } from "@/features/boardSlice";
+import { addColumn, handleDragEnd, selectColumnIds } from "@/features/boardSlice";
 import ProjectColumn from "@/components/ProjectColumn";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -10,6 +10,7 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
+import { DragDropContext, DropResult } from "react-beautiful-dnd";
 
 const ProjectContent: React.FC = (): React.ReactElement | undefined => {
     const dispatch = useAppDispatch();
@@ -48,11 +49,17 @@ const ProjectContent: React.FC = (): React.ReactElement | undefined => {
         form.reset();
     }
     
+    const onDragEnd = (result: DropResult) => {
+        dispatch(handleDragEnd(result));
+    }
+    
     return (
         <div className = "flex flex-row px-8 pb-4 gap-4">
-            {columnIds.map((columnId: string) => {
-                return <ProjectColumn key = {columnId} columnId = {columnId}></ProjectColumn>
-            })}
+            <DragDropContext onDragEnd = {onDragEnd}>
+                {columnIds.map((columnId: string) => {
+                    return <ProjectColumn key = {columnId} columnId = {columnId}></ProjectColumn>
+                })}
+            </DragDropContext>
             {!isAddingNewColumn ?
                 <Button className = "bg-gray-200/50 rounded-sm aspect-square" variant = "task" size = "icon" onClick ={() => {
                     setIsAddingNewColumn(true);

@@ -11,6 +11,7 @@ import {
 } from "@/features/boardApi"
 import { AxiosResponse } from "axios";
 import { IMember } from "@/types/member";
+import { DropResult } from "react-beautiful-dnd";
 
 interface BoardState {
     state: "idle" | "loading" | "succeeded" | "failed",
@@ -37,7 +38,11 @@ const initialState: BoardState = {
 export const boardSlice = createSlice({
     name: "board",
     initialState,
-    reducers: {},
+    reducers: {
+        locallyUpdateColumn: (state, action: { payload: IColumn }) => {
+            state.columns[action.payload._id] = action.payload;
+        }
+    },
     extraReducers: (builder) => {
         builder
             .addCase(fetchBoard.pending, (state) => {
@@ -191,6 +196,64 @@ export const updateMember = createAsyncThunk(
         return response.data;
     }
 );
+
+export const handleDragEnd = createAsyncThunk(
+    'board/handleDragEnd',
+    async(result: DropResult, { getState, dispatch }) => {
+        const { source, destination, draggableId } = result;
+        if (!destination) return;
+        if (source.droppableId === destination.droppableId && source.index === destination.index) return;
+        
+        const state: { board: BoardState } = getState() as { board: BoardState };
+        
+        const sourceColumn: IColumn = state.board.columns[source.droppableId];
+        const destinationColumn: IColumn = state.board.columns[destination.droppableId];
+        
+        if (sourceColumn === destinationColumn) {
+            const newTaskIds: string[] = Array.from(sourceColumn.taskIds);
+            newTaskIds.splice(source.index, 1);
+            newTaskIds.splice(destination.index, 0, draggableId);
+            const newColumn: IColumn = {
+                ...sourceColumn,
+                taskIds: newTaskIds
+            };
+            dispatch(locallyUpdateColumn(newColumn));
+            await handleUpdateColumn(newColumn)
+                .catch(() => {
+                    dispatch(locallyUpdateColumn(sourceColumn));
+                });
+        }
+        
+        if (sourceColumn !== destinationColumn) {
+            const newSourceTaskIds: string[] = Array.from(sourceColumn.taskIds);
+            newSourceTaskIds.splice(source.index, 1);
+            const newDestinationTaskIds: string[] = Array.from(destinationColumn.taskIds);
+            newDestinationTaskIds.splice(destination.index, 0, draggableId);
+            const newSourceColumn: IColumn = {
+                ...sourceColumn,
+                taskIds: newSourceTaskIds
+            };
+            const newDestinationColumn: IColumn = {
+                ...destinationColumn,
+                taskIds: newDestinationTaskIds
+            };
+            dispatch(locallyUpdateColumn(newSourceColumn));
+            dispatch(locallyUpdateColumn(newDestinationColumn));
+            await handleUpdateColumn(newSourceColumn)
+                .then(async() => {
+                    await handleUpdateColumn(newDestinationColumn);
+                })
+                .catch(() => {
+                    dispatch(locallyUpdateColumn(sourceColumn));
+                    dispatch(locallyUpdateColumn(destinationColumn));
+                });
+        }
+    }
+);
+
+export const {
+    locallyUpdateColumn
+} = boardSlice.actions;
 
 export const selectState = (state: RootState) => state.board.state;
 export const selectError = (state: RootState) => state.board.error;
