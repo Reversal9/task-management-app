@@ -31,7 +31,13 @@ import {
     PopoverContent,
     PopoverTrigger,
 } from "@/components/ui/popover";
-import { Draggable, DraggableProvided } from "react-beautiful-dnd";
+import {
+    Draggable,
+    DraggableProvided,
+    DraggableStateSnapshot,
+    DraggingStyle,
+    NotDraggingStyle
+} from "react-beautiful-dnd";
 
 interface Props {
     index: number,
@@ -67,14 +73,27 @@ const ProjectTask: React.FC<Props> = ({ index, taskId, columnId }: Props): React
         columnId: columnId
     };
     
+    function getStyle(style: DraggingStyle | NotDraggingStyle | undefined, snapshot: DraggableStateSnapshot) {
+        if (!snapshot.isDropAnimating) {
+            return style;
+        }
+        const translate: string = `translate(${snapshot.dropAnimation?.moveTo.x}px, ${snapshot.dropAnimation?.moveTo.y}px)`;
+        return {
+            ...style,
+            transform: `${translate}`,
+            transition: `all ${snapshot.dropAnimation?.curve} ${.2}s`,
+        };
+    }
+    
     return (
         <Draggable draggableId = {taskId} index = {index}>
-            {(provided: DraggableProvided) => (
+            {(provided: DraggableProvided, snapshot: DraggableStateSnapshot) => (
                 <div
-                    className = "flex flex-col bg-white shadow-lg rounded-sm"
+                    className = "flex flex-col bg-white shadow-sm rounded-sm m-0.5"
                     ref = {provided.innerRef}
                     {...provided.draggableProps}
-                    {...provided.dragHandleProps}>
+                    {...provided.dragHandleProps}
+                    style={getStyle(provided.draggableProps.style, snapshot)}>
                         <div className = "flex flex-1 flex-row p-2 gap-1">
                             <Summary taskId = {taskId}></Summary>
                             <DropdownMenu>
